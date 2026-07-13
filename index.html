@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MacDonald Course HQ — Fall 2026</title>
+<!--
+  ═══════════════════════════════════════════════════════════════════
+  MACDONALD COURSE HQ — single-file, zero-dependency student page
+  ═══════════════════════════════════════════════════════════════════
+  HOW THIS UPDATES EACH SEMESTER:
+  Everything semester-specific lives in ONE json block below, marked
+  ▓▓ SEMESTER DATA ▓▓. Regenerate that block (see student-site/README.md);
+  never touch the HTML/CSS/JS below it. The page computes "what week is
+  it", countdowns, and current-phase highlights from today's date at
+  load time — zero maintenance during the semester.
+-->
+<style>
+  :root{
+    --green:#005A43; --green-deep:#00402f; --green-soft:#e7f0ec;
+    --paper:#faf8f4; --card:#ffffff; --ink:#1e2a26; --ink-2:#54635d; --ink-3:#8a968f;
+    --line:#e3e0d8; --accent:#b98c2f; --accent-soft:#f6efdd;
+    --bar-track:#edeae2; --bar-fill:#0d7a5c;
+    --radius:14px; --shadow:0 1px 2px rgba(30,42,38,.06), 0 8px 24px -12px rgba(30,42,38,.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --green:#3fa886; --green-deep:#0f2b22; --green-soft:#12261f;
+      --paper:#101815; --card:#182320; --ink:#e8ece9; --ink-2:#a7b3ad; --ink-3:#6f7d76;
+      --line:#28352f; --accent:#d4ad5a; --accent-soft:#2a2415;
+      --bar-track:#243029; --bar-fill:#3fa886;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
+    }
+  }
+  *{box-sizing:border-box; margin:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background:var(--paper); color:var(--ink); line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 20px}
+
+  /* ── header ─────────────────────────────── */
+  header{
+    background:
+      radial-gradient(1200px 400px at 85% -10%, rgba(255,255,255,.10), transparent 60%),
+      linear-gradient(160deg, var(--green-deep) 0%, #0a4f3c 100%);
+    color:#f2f6f4; padding:44px 0 40px; border-bottom:4px solid var(--accent);
+  }
+  @media (prefers-color-scheme: dark){
+    header{background:linear-gradient(160deg,#0f2b22 0%,#123a2d 100%)}
+  }
+  .kicker{font-size:12px; letter-spacing:.18em; text-transform:uppercase; opacity:.75; margin-bottom:10px}
+  header h1{font-size:clamp(28px,5vw,44px); font-weight:800; letter-spacing:-.02em; line-height:1.1}
+  header h1 .thin{font-weight:300; opacity:.85}
+  .sub{margin-top:10px; max-width:56ch; opacity:.85; font-size:15px}
+  .statusrow{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px}
+  .chip{
+    display:inline-flex; align-items:center; gap:8px; padding:7px 14px; border-radius:999px;
+    background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.22);
+    font-size:13.5px; font-weight:600;
+  }
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:#7dd8b6}
+  .chip.gold{background:rgba(212,173,90,.18); border-color:rgba(212,173,90,.45)}
+  nav.jump{display:flex; flex-wrap:wrap; gap:6px 18px; margin-top:26px; font-size:13.5px}
+  nav.jump a{color:#cfe3da; text-decoration:none; border-bottom:1px dotted rgba(255,255,255,.35); padding-bottom:1px}
+  nav.jump a:hover{color:#fff; border-bottom-style:solid}
+
+  main{padding:34px 0 10px}
+  section{margin-bottom:44px}
+  h2{font-size:22px; font-weight:800; letter-spacing:-.01em; margin-bottom:6px}
+  .h2sub{color:var(--ink-2); font-size:14.5px; margin-bottom:18px}
+  .h2row{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+  .tag{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:700}
+
+  /* ── right-now strip ─────────────────────── */
+  .nowgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:14px}
+  .nowcard{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); border-top:3px solid var(--green);
+  }
+  .nowcard .course{font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-2)}
+  .nowcard .phase{font-size:19px; font-weight:800; margin:4px 0 2px}
+  .nowcard .detail{font-size:14px; color:var(--ink-2)}
+  .nowcard .next{margin-top:12px; padding-top:10px; border-top:1px dashed var(--line); font-size:13.5px}
+  .nowcard .next b{color:var(--green)}
+
+  /* ── course cards ────────────────────────── */
+  .courses{display:grid; grid-template-columns:repeat(auto-fit,minmax(330px,1fr)); gap:18px}
+  .ccard{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+  .ccard .chead{padding:20px 22px 16px; border-bottom:1px solid var(--line)}
+  .ccard .code{font-size:13px; font-weight:800; color:var(--green); letter-spacing:.06em}
+  .ccard h3{font-size:20px; font-weight:800; letter-spacing:-.01em; margin:2px 0 6px}
+  .ccard .tagline{font-style:italic; color:var(--ink-2); font-size:14.5px}
+  .meta{display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:12px; font-size:13px; color:var(--ink-2)}
+  .meta span{display:inline-flex; align-items:center; gap:5px}
+  .cbody{padding:18px 22px 22px}
+  .cbody p{font-size:14.5px; margin-bottom:14px}
+  .cbody h4{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin:18px 0 10px}
+
+  /* grade bars — single measure (share of grade), one hue, direct labels */
+  .gr{margin-bottom:9px}
+  .gr .lbl{display:flex; justify-content:space-between; font-size:13px; margin-bottom:3px}
+  .gr .lbl .n{color:var(--ink)} .gr .lbl .v{color:var(--ink-2); font-variant-numeric:tabular-nums}
+  .gr .track{height:9px; background:var(--bar-track); border-radius:4px; overflow:hidden}
+  .gr .fill{height:100%; background:var(--bar-fill); border-radius:0 4px 4px 0}
+
+  ul.dates{list-style:none}
+  ul.dates li{
+    display:flex; gap:12px; padding:7px 0; font-size:14px; border-bottom:1px solid var(--line);
+  }
+  ul.dates li:last-child{border-bottom:none}
+  ul.dates .d{flex:0 0 88px; font-weight:700; color:var(--green); font-variant-numeric:tabular-nums; font-size:13px; padding-top:1px}
+  ul.dates li.past{opacity:.45}
+  ul.dates li.past .d{color:var(--ink-3)}
+  ul.dates li.next-up{background:var(--green-soft); margin:0 -10px; padding:7px 10px; border-radius:8px; border-bottom-color:transparent}
+  ul.dates li.next-up .d::before{content:"→ "; }
+
+  /* ── chat ────────────────────────────────── */
+  .chatcard{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+  .chathead{padding:14px 20px; background:var(--green-deep); color:#eef5f1; display:flex; align-items:center; gap:12px}
+  .chathead .avatar{width:38px;height:38px;border-radius:10px;background:var(--accent);display:grid;place-items:center;font-size:20px}
+  .chathead .t{font-weight:800; font-size:15px}
+  .chathead .s{font-size:12.5px; opacity:.75}
+  .chatlog{padding:20px; max-height:460px; overflow-y:auto; display:flex; flex-direction:column; gap:12px}
+  .msg{max-width:82%; padding:11px 15px; border-radius:14px; font-size:14.5px}
+  .msg.bot{background:var(--green-soft); border:1px solid var(--line); border-top-left-radius:4px; align-self:flex-start}
+  .msg.user{background:var(--green); color:#fff; border-top-right-radius:4px; align-self:flex-end}
+  .msg.bot a{color:var(--green); font-weight:600}
+  .msg .src{display:block; margin-top:7px; font-size:11.5px; color:var(--ink-3)}
+  .chips{display:flex; flex-wrap:wrap; gap:8px; align-self:flex-start; max-width:90%}
+  .chips button{
+    font-size:13px; padding:6px 12px; border-radius:999px; cursor:pointer;
+    background:var(--card); color:var(--green); border:1px solid var(--green);
+    transition:background .12s;
+  }
+  .chips button:hover{background:var(--green-soft)}
+  .chatbar{display:flex; gap:10px; padding:14px 16px; border-top:1px solid var(--line)}
+  .chatbar input{
+    flex:1; padding:11px 14px; font-size:15px; border:1px solid var(--line); border-radius:10px;
+    background:var(--paper); color:var(--ink); outline:none;
+  }
+  .chatbar input:focus{border-color:var(--green)}
+  .chatbar button{
+    padding:11px 20px; font-size:14.5px; font-weight:700; color:#fff; background:var(--green);
+    border:none; border-radius:10px; cursor:pointer;
+  }
+  .chatbar button:hover{background:var(--green-deep)}
+
+  /* ── AI policy ───────────────────────────── */
+  .tiers{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; margin-bottom:24px}
+  .tier{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow)}
+  .tier .badge{display:inline-block; font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase;
+    padding:4px 10px; border-radius:6px; margin-bottom:10px; background:var(--green-soft); color:var(--green)}
+  .tier h4{font-size:16px; margin-bottom:6px}
+  .tier p{font-size:13.5px; color:var(--ink-2)}
+  .quiz{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px 24px}
+  .quiz .qnum{font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--accent)}
+  .quiz .scenario{font-size:16.5px; font-weight:600; margin:8px 0 16px}
+  .quiz .opts{display:flex; flex-wrap:wrap; gap:10px}
+  .quiz .opts button{
+    padding:9px 16px; font-size:14px; font-weight:600; border-radius:10px; cursor:pointer;
+    background:var(--paper); border:1.5px solid var(--line); color:var(--ink);
+  }
+  .quiz .opts button:hover{border-color:var(--green); color:var(--green)}
+  .quiz .opts button:disabled{cursor:default; opacity:.55}
+  .quiz .opts button.right{background:var(--green); border-color:var(--green); color:#fff; opacity:1}
+  .quiz .opts button.wrong{border-color:#b3543f; color:#b3543f; opacity:1}
+  .quiz .verdict{margin-top:16px; padding:14px 16px; border-radius:10px; font-size:14.5px; background:var(--green-soft); border:1px solid var(--line)}
+  .quiz .nextbtn{margin-top:14px; padding:9px 18px; font-weight:700; font-size:14px; color:#fff; background:var(--green); border:none; border-radius:10px; cursor:pointer}
+
+  /* ── about ───────────────────────────────── */
+  .about{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px}
+  .acard{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px 24px; box-shadow:var(--shadow)}
+  .acard h3{font-size:17px; margin-bottom:10px}
+  .acard p{font-size:14.5px; color:var(--ink-2); margin-bottom:10px}
+  .acard ul{padding-left:20px; font-size:14.5px; color:var(--ink-2)}
+  .acard li{margin-bottom:6px}
+  .factline{display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--line); font-size:14px}
+  .factline:last-child{border-bottom:none}
+  .factline .k{flex:0 0 110px; color:var(--ink-3); font-size:12.5px; text-transform:uppercase; letter-spacing:.08em; padding-top:2px}
+
+  footer{border-top:1px solid var(--line); margin-top:30px; padding:26px 0 40px; font-size:13px; color:var(--ink-3)}
+  footer .wrap{display:flex; flex-direction:column; gap:6px}
+  footer b{color:var(--ink-2)}
+
+  @media (max-width:640px){
+    .msg{max-width:94%}
+    ul.dates .d{flex-basis:76px}
+  }
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+</style>
+</head>
+<body>
+
+<!-- ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+     ▓▓ SEMESTER DATA — the ONLY part that changes each semester ▓▓
+     ▓▓ Regenerate per student-site/README.md. Dates: YYYY-MM-DD ▓▓
+     ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ -->
+<script type="application/json" id="hq-data">
+{
+  "semester": {
+    "label": "Fall 2026",
+    "weekOneMonday": "2026-08-17",
+    "firstClass": "2026-08-19",
+    "lastClass": "2026-12-08",
+    "finalsEnd": "2026-12-16",
+    "dataUpdated": "July 12, 2026",
+    "breaks": [
+      {"start": "2026-10-10", "end": "2026-10-18", "label": "Fall Break"},
+      {"start": "2026-11-25", "end": "2026-11-29", "label": "Thanksgiving Break"}
+    ]
+  },
+  "instructor": {
+    "name": "John E. MacDonald IV",
+    "email": "jmacdon@binghamton.edu",
+    "office": "AA-246, School of Management",
+    "officeHours": "Typically right after class Mon & Wed (~8:30 PM) and by appointment — the syllabus has the official line.",
+    "bio": "By day, John manages DesignOps at Cisco. Before that: IBM, and years of retail management. He teaches the way he works — real problems, real stakeholders, real deadlines — which is why you will build things and talk to people in his classes instead of watching slides."
+  },
+  "courses": [
+    {
+      "id": "473",
+      "code": "MIS 473",
+      "title": "Information Systems Project",
+      "level": "Undergraduate · 4 credits",
+      "meets": "Mon & Wed · 5:00–6:30 PM",
+      "room": "CW-214",
+      "tagline": "Real clients. Real projects. Real consequences (the good kind).",
+      "desc": "Teams of two take on a real project for a real local organization — nonprofits, villages, community groups — under joint supervision of a client and Prof. MacDonald. You analyze an unstructured problem, build an IT solution, and communicate the results. Most weeks are client and team meetings, not classroom sessions; all-hands classes are explicitly scheduled. Expect roughly 10 hours a week outside class.",
+      "grading": [
+        {"item": "Client evaluation", "pct": 25},
+        {"item": "Project proposal", "pct": 15},
+        {"item": "Checkpoint 1", "pct": 15},
+        {"item": "Checkpoint 2", "pct": 15},
+        {"item": "Final presentation", "pct": 15},
+        {"item": "Peer evaluations (×2)", "pct": 10},
+        {"item": "Weekly updates", "pct": 5}
+      ],
+      "phases": [
+        {"from": "2026-08-17", "to": "2026-08-23", "title": "Launch & Bidding", "detail": "Course overview Wed Aug 19 (required). Team leaders email bids by Fri Aug 21, noon; projects assigned by Sunday."},
+        {"from": "2026-08-24", "to": "2026-09-06", "title": "Client Discovery", "detail": "Contact your client within days, hold first meetings, and work on your Team Compact & Project Proposal."},
+        {"from": "2026-09-07", "to": "2026-09-16", "title": "Proposal Reviews", "detail": "Proposal + Team Compact reviews with Prof. MacDonald (schedule via Google Sheet); submit before your meeting. Due Wed Sep 16."},
+        {"from": "2026-09-17", "to": "2026-09-27", "title": "Build Phase", "detail": "Heads-down project work. Weekly Updates begin: first one due Mon Sep 21, 8 PM — then every Monday."},
+        {"from": "2026-09-28", "to": "2026-10-09", "title": "Checkpoint 1", "detail": "Checkpoint meetings during class time; submit to Brightspace before your meeting. Submissions due Tue Oct 6."},
+        {"from": "2026-10-10", "to": "2026-10-18", "title": "Fall Break", "detail": "No classes. Tell your client your availability in advance."},
+        {"from": "2026-10-19", "to": "2026-10-25", "title": "Midpoint", "detail": "All-hands Mon Oct 19: status, Checkpoint 1 lessons learned, second-half planning. Peer review due Fri Oct 23."},
+        {"from": "2026-10-26", "to": "2026-11-11", "title": "Checkpoint 2", "detail": "Checkpoint meetings during class time; submit before your meeting."},
+        {"from": "2026-11-12", "to": "2026-11-22", "title": "Final Prep", "detail": "Presentation & project-readiness workshop Wed Nov 18 (required)."},
+        {"from": "2026-11-23", "to": "2026-12-08", "title": "Final Presentations", "detail": "In the classroom during class time; schedule via Google Sheet. No class Wed Nov 25."},
+        {"from": "2026-12-09", "to": "2026-12-16", "title": "Wrap-Up", "detail": "By Fri Dec 11: team, client & peer evaluations; deliver everything to your client and transfer ownership of all accounts and assets."}
+      ],
+      "keyDates": [
+        {"date": "2026-08-19", "label": "First class — all students required", "time": "5:00 PM"},
+        {"date": "2026-08-21", "label": "Team leaders email project bids", "time": "noon"},
+        {"date": "2026-09-16", "label": "Project Proposal + Team Compact due"},
+        {"date": "2026-09-21", "label": "First Weekly Update due (then every Mon)", "time": "8:00 PM"},
+        {"date": "2026-10-06", "label": "Checkpoint 1 submission due"},
+        {"date": "2026-10-19", "label": "Midpoint all-hands — required"},
+        {"date": "2026-10-23", "label": "Mid-semester peer review due"},
+        {"date": "2026-10-26", "label": "Checkpoint 2 meetings begin (through Nov 11)"},
+        {"date": "2026-11-18", "label": "Final-presentation readiness workshop — required"},
+        {"date": "2026-11-23", "label": "Final presentations begin (through Dec 7)"},
+        {"date": "2026-12-11", "label": "Client/peer evals + full client handoff due"}
+      ]
+    },
+    {
+      "id": "580a",
+      "code": "MIS 580A",
+      "title": "Strategic Business Communication Seminar",
+      "level": "Graduate",
+      "meets": "Mon & Wed · 6:45–8:15 PM",
+      "room": "CW-214",
+      "tagline": "You will not sit through lectures. You will do things.",
+      "desc": "A hands-on seminar on communicating strategically inside organizations — hierarchy, audiences, channels, influence. Every session is built from timed activities: debates, role-plays, usability challenges, field work, pitch workshops. Two group projects anchor the semester: GP1 (AI in Business) and a semester-long Strategic Communication Initiative that ends in a final presentation with a live adversarial Q&A.",
+      "grading": [
+        {"item": "Major Group Project", "pct": 40},
+        {"item": "Individual labs & assignments", "pct": 25},
+        {"item": "GP1: AI in Business", "pct": 15},
+        {"item": "Engagement & participation", "pct": 10},
+        {"item": "Peer review & reflection", "pct": 10}
+      ],
+      "phases": [
+        {"from": "2026-08-17", "to": "2026-08-23", "title": "Kickoff", "detail": "First session Wed Aug 19: overview, meet & greet, GP1 (AI in Business) team formation and launch."},
+        {"from": "2026-08-24", "to": "2026-09-06", "title": "Foundations", "detail": "Hierarchy, roles, audiences, messages. Failure analysis assigned; Elevator Pitch Workshop; GP1 check-ins."},
+        {"from": "2026-09-07", "to": "2026-09-20", "title": "Failure → Strategy", "detail": "Usability Dash (in class, no AI), failure-to-design debrief with real class data, GP1 presentation prep."},
+        {"from": "2026-09-21", "to": "2026-09-27", "title": "GP1 Finale", "detail": "GP1 presentations Wed Sep 23 (graded); peer feedback submitted in class."},
+        {"from": "2026-09-28", "to": "2026-10-09", "title": "Major Project Launch", "detail": "AI ethics debate, collaboration-platform norms, Channel Audit Walkabout — and the Strategic Communication Initiative kicks off."},
+        {"from": "2026-10-10", "to": "2026-10-18", "title": "Fall Break", "detail": "No classes. Teams develop their Friction Brief; individual field observation continues."},
+        {"from": "2026-10-19", "to": "2026-11-01", "title": "Stakeholders", "detail": "Friction Brief pitches (instructor approval on the spot), stakeholder mapping, personas, targeted communication."},
+        {"from": "2026-11-02", "to": "2026-11-08", "title": "Midpoint + Constraint", "detail": "Graded midpoint checkpoint — and each team receives its assigned real-world constraint."},
+        {"from": "2026-11-09", "to": "2026-11-22", "title": "Sharpen", "detail": "Visual communication challenge, presentation practice, Rapid Usability Challenge, The Judgment Call, The Cold Call."},
+        {"from": "2026-11-23", "to": "2026-11-29", "title": "Resistance Prep", "detail": "Presentation skills workshop + Resistance Test preparation Mon Nov 23. Nothing due over Thanksgiving — on purpose."},
+        {"from": "2026-11-30", "to": "2026-12-06", "title": "Final Presentations", "detail": "Nov 30 – Dec 2, ending with the Resistance Test: a short adversarial Q&A."},
+        {"from": "2026-12-07", "to": "2026-12-16", "title": "Close", "detail": "Course close Mon Dec 7 (synthesis + reflection). Final project submission due on Brightspace Tue Dec 8."}
+      ],
+      "keyDates": [
+        {"date": "2026-08-19", "label": "First class — GP1 kickoff", "time": "6:45 PM"},
+        {"date": "2026-09-23", "label": "GP1 presentations (graded)"},
+        {"date": "2026-09-28", "label": "Major Group Project launch window begins"},
+        {"date": "2026-10-19", "label": "Friction Brief pitches (Oct 19–21)"},
+        {"date": "2026-11-02", "label": "Midpoint checkpoint + constraint assigned (Nov 2–4)"},
+        {"date": "2026-11-23", "label": "Resistance Test prep workshop"},
+        {"date": "2026-11-30", "label": "Final presentations (Nov 30 – Dec 2)"},
+        {"date": "2026-12-07", "label": "Course close: synthesis & reflection"},
+        {"date": "2026-12-08", "label": "Final project submission due on Brightspace"}
+      ]
+    }
+  ],
+  "universityDates": [
+    {"date": "2026-08-31", "label": "Add/drop deadline", "time": "11:59 PM"},
+    {"date": "2026-09-07", "label": "No class — Labor Day"},
+    {"date": "2026-09-08", "label": "Tuesday runs a MONDAY schedule (Labor Day makeup)"},
+    {"date": "2026-09-21", "label": "No class — Yom Kippur"},
+    {"date": "2026-10-10", "label": "Fall break begins (through Oct 18)"},
+    {"date": "2026-10-29", "label": "Withdrawal deadline", "time": "11:59 PM"},
+    {"date": "2026-11-25", "label": "No class — Thanksgiving (break through Nov 29)"},
+    {"date": "2026-12-08", "label": "Last day of classes"}
+  ],
+  "aiPolicy": {
+    "note": "Both courses use the same disclosure framework. AI use is welcome in most work — what matters is honesty about how you used it. Major submissions require a disclosure statement naming the tier. A few in-class activities are explicitly NO-AI (they are announced as such, e.g. the Usability Dash) because the skill being trained is yours, not the tool's.",
+    "tiers": [
+      {"name": "AI-Assisted", "short": "You did the work; AI helped around the edges.", "desc": "Brainstorming, critique of your draft, grammar and wording cleanup, formatting help. The substance and structure are yours."},
+      {"name": "AI-Iterated", "short": "You and AI traded drafts.", "desc": "AI produced meaningful chunks or structure that you substantially reshaped, rewrote, and directed over multiple rounds. Shared authorship, your judgment in charge."},
+      {"name": "AI-Generated", "short": "AI produced the substance.", "desc": "AI created the core content and you curated, verified, and lightly edited it. Allowed where stated — but you own every claim in it, so verify everything."}
+    ],
+    "quiz": [
+      {"scenario": "You wrote your whole proposal yourself, then asked an AI to fix grammar and tighten the wording.", "answer": 0, "explain": "The substance and structure are yours; AI polished the edges. That's AI-Assisted. Disclose it on a major submission anyway."},
+      {"scenario": "You gave an AI your outline, it drafted the sections, and you spent an evening reorganizing, rewriting, and re-prompting until it matched what you actually wanted to say.", "answer": 1, "explain": "Real contribution from the AI, substantially reshaped by you over multiple rounds — that's AI-Iterated."},
+      {"scenario": "You prompted an AI for a complete first draft, checked the facts, changed a few sentences, and submitted it.", "answer": 2, "explain": "AI produced the substance; you curated and verified. That's AI-Generated — allowed where stated, but you own every claim in it."},
+      {"scenario": "It's the in-class Usability Dash in MIS 580A and you quietly open an AI tab to critique the artifact for you.", "answer": 3, "explain": "Some in-class activities are explicitly NO-AI — the Usability Dash is one. The skill being trained there is your eye, not the tool's."},
+      {"scenario": "An AI suggested five possible angles for your presentation; you picked one and built the whole thing yourself.", "answer": 0, "explain": "Idea-stage brainstorming with all the actual work done by you — AI-Assisted."}
+    ]
+  },
+  "faq": [
+    {"q": "Who is Professor MacDonald?", "tag": "about", "keys": ["who", "macdonald", "professor", "background", "bio", "cisco", "ibm", "industry"], "a": "John E. MacDonald IV manages DesignOps at Cisco by day; before that he was at IBM, and before <em>that</em> he ran retail teams. He teaches the way industry actually works: real problems, real stakeholders, real deadlines. Expect activities and conversations, not lecture marathons."},
+    {"q": "How do I contact Professor MacDonald?", "tag": "about", "keys": ["contact", "email", "reach", "message", "question"], "a": "Email <a href='mailto:jmacdon@binghamton.edu'>jmacdon@binghamton.edu</a>. His office is AA-246 in the School of Management. For anything about your grade or your team, email is the right channel."},
+    {"q": "When are office hours?", "tag": "about", "keys": ["office", "hours", "officehours", "meet", "appointment", "talk", "help"], "a": "Typically right after class on Mon &amp; Wed (~8:30 PM), and by appointment — just email <a href='mailto:jmacdon@binghamton.edu'>jmacdon@binghamton.edu</a>. Check the syllabus for the official line and location."},
+    {"q": "Where is his office?", "tag": "about", "keys": ["office", "where", "aa246", "aa-246", "room", "located"], "a": "AA-246, in the Academic A building (School of Management)."},
+    {"q": "When and where does class meet?", "tag": "general", "keys": ["when", "where", "class", "meet", "time", "room", "schedule", "location", "cw214", "cw-214"], "a": "Both courses meet Monday &amp; Wednesday in <strong>CW-214</strong>: MIS 473 at <strong>5:00–6:30 PM</strong> and MIS 580A at <strong>6:45–8:15 PM</strong>. Heads up: Tue Sep 8 runs a <em>Monday</em> schedule."},
+    {"q": "When is the first class?", "tag": "general", "keys": ["first", "start", "begin", "august", "day"], "a": "<strong>Wednesday, August 19</strong> — and it matters. MIS 473 launches project bidding that day, and MIS 580A forms GP1 teams. Be there."},
+    {"q": "Is there a final exam?", "tag": "general", "keys": ["final", "exam", "finals", "test"], "a": "No final exam in either course. 🎉 Instead: MIS 473 ends with final client presentations (Nov 23 – Dec 7) and project handoff; MIS 580A ends with final presentations + the Resistance Test (Nov 30 – Dec 2) and a final submission due Dec 8."},
+    {"q": "What is the teaching style like?", "tag": "general", "keys": ["teaching", "style", "lecture", "boring", "like", "expect", "format"], "a": "Anti-lecture. Sessions are built from timed activity blocks — workshops, debates, role-plays, pitches, field work. In 580A no lecture block runs longer than ~35 minutes. If you want to sit quietly in the back, these are the wrong courses; if you want to practice things that matter at work, welcome."},
+    {"q": "Do I have to come to class?", "tag": "general", "keys": ["attendance", "attend", "come", "skip", "miss", "absent", "required"], "a": "The in-class work <em>is</em> the course. In MIS 473, all-hands sessions are explicitly marked \"all students required\"; other weeks are client/team meetings. In MIS 580A, activities and engagement (10% of your grade) happen in the room. Official attendance policy: see the syllabus. If you must miss a session, email ahead."},
+    {"q": "Is there a textbook?", "tag": "general", "keys": ["textbook", "book", "buy", "materials", "readings"], "a": "This page doesn't track materials — check the syllabus on Brightspace for the official answer. Historically these courses run on real work rather than textbook chapters."},
+    {"q": "When is the add/drop deadline?", "tag": "general", "keys": ["add", "drop", "adddrop", "deadline", "register", "enroll"], "a": "<strong>Monday, August 31, 11:59 PM.</strong> The withdrawal deadline is Thursday, October 29."},
+    {"q": "When can I withdraw?", "tag": "general", "keys": ["withdraw", "withdrawal", "w", "deadline"], "a": "The withdrawal deadline is <strong>Thursday, October 29, 11:59 PM</strong>. If you're considering it, talk to Prof. MacDonald first — there's often a fixable problem underneath."},
+    {"q": "When is fall break?", "tag": "general", "keys": ["fall", "break", "october", "vacation", "off"], "a": "<strong>Saturday Oct 10 – Sunday Oct 18.</strong> No classes. MIS 473 teams: tell your client your availability in advance. MIS 580A teams: your Friction Brief develops over break — it's designed that way."},
+    {"q": "What about Thanksgiving?", "tag": "general", "keys": ["thanksgiving", "november", "turkey", "break"], "a": "No class Wed Nov 25 (break runs Nov 25–29). In MIS 580A, <strong>nothing is due over Thanksgiving</strong> — that's deliberate. MIS 473 final presentations resume Mon Nov 30."},
+    {"q": "Why does Tuesday Sep 8 have class?", "tag": "general", "keys": ["tuesday", "september", "labor", "monday", "makeup", "conversion", "sep"], "a": "Labor Day (Mon Sep 7) is a no-class day, so the university runs a <strong>Monday schedule on Tuesday, September 8</strong>. Your Monday class meets that Tuesday. Also: no class Mon Sep 21 (Yom Kippur)."},
+    {"q": "Is this page official?", "tag": "general", "keys": ["official", "page", "site", "trust", "accurate", "syllabus"], "a": "No — this is a convenience layer. The <strong>syllabus and Brightspace are official</strong>. If this page and the syllabus ever disagree, the syllabus wins. Spot an error? Tell Prof. MacDonald."},
+    {"q": "Can I use AI / ChatGPT in these courses?", "tag": "policy", "keys": ["ai", "chatgpt", "gpt", "claude", "copilot", "allowed", "use", "cheating", "artificial"], "a": "Yes — openly. Both courses use a three-tier disclosure framework: <strong>AI-Assisted</strong>, <strong>AI-Iterated</strong>, and <strong>AI-Generated</strong>. Major submissions need a disclosure naming the tier. A few in-class activities are explicitly NO-AI because the skill being trained is yours. Scroll to the AI Policy section on this page and try the quiz."},
+    {"q": "What do the three AI tiers mean?", "tag": "policy", "keys": ["tier", "assisted", "iterated", "generated", "disclosure", "levels", "framework"], "a": "<strong>AI-Assisted</strong>: you did the work, AI helped around the edges (brainstorming, grammar). <strong>AI-Iterated</strong>: you and AI traded drafts — real AI contribution, substantially reshaped by you. <strong>AI-Generated</strong>: AI produced the substance and you curated and verified it. Whatever the tier, disclose it on major submissions — the honesty is the point."},
+    {"q": "Do I have to disclose AI use?", "tag": "policy", "keys": ["disclose", "disclosure", "declare", "report", "honesty"], "a": "On major submissions, yes — a short statement naming the tier (AI-Assisted / AI-Iterated / AI-Generated). It's not a gotcha; it's practice for how professional teams should work with these tools."},
+    {"q": "Which activities ban AI?", "tag": "policy", "keys": ["noai", "no-ai", "ban", "banned", "without", "forbidden"], "a": "A few in-class activities in MIS 580A are explicitly NO-AI — for example the <strong>Usability Dash</strong>. They're announced as such. The point: some skills have to live in your own head."},
+    {"q": "What kinds of projects are in MIS 473?", "tag": "473", "keys": ["project", "kinds", "types", "clients", "organizations", "examples", "work"], "a": "Real projects for real local organizations — nonprofits, villages, community groups. Recent briefs have included website builds and redesigns, Microsoft 365 workflow automation, cloud migrations, accessibility improvements, and research/data projects. You'll see this semester's full list on day one — then you bid."},
+    {"q": "How do teams work in MIS 473?", "tag": "473", "keys": ["team", "teams", "partner", "pairs", "group", "size", "formation"], "a": "Teams of <strong>two</strong>. You form teams at the first class (Wed Aug 19), pick a team leader, and bid on projects together. Assignments are final once posted — like a real staffing decision."},
+    {"q": "How does project bidding work?", "tag": "473", "keys": ["bid", "bidding", "bids", "choose", "pick", "assign", "assignment"], "a": "Project briefs are presented at the first class. Your team ranks the projects it wants, and the <strong>team leader emails the bids by Friday, August 21, noon</strong>. Prof. MacDonald assigns projects by end of day Sunday, balancing preferences across teams. Assignments are final."},
+    {"q": "What are Weekly Updates in MIS 473?", "tag": "473", "keys": ["weekly", "update", "updates", "log", "monday", "8pm", "report"], "a": "A short weekly status PDF, due <strong>every Monday at 8 PM</strong> starting Sep 21 (11 total; none on Oct 12 during break; last one Dec 7). Named <span class='mono'>Team#_Week#_Update.pdf</span>, submitted on Brightspace. Small weight (5%), big signal — it's the course's heartbeat, and there's an example posted from day one."},
+    {"q": "What are checkpoints in MIS 473?", "tag": "473", "keys": ["checkpoint", "checkpoints", "cp1", "cp2", "milestone", "review"], "a": "Two graded checkpoint meetings with Prof. MacDonald (15% each). <strong>Checkpoint 1:</strong> meetings Sep 28 – Oct 7, submission due Tue Oct 6. <strong>Checkpoint 2:</strong> meetings Oct 26 – Nov 11. You submit to Brightspace <em>before</em> your meeting, then talk through progress, blockers, and next steps."},
+    {"q": "What is the project proposal?", "tag": "473", "keys": ["proposal", "compact", "propose", "scope", "plan"], "a": "Your Project Proposal + Team Compact (one file) defines scope, milestones, deliverables, and how your team operates. You review it with Prof. MacDonald in a scheduled meeting (Sep 8–16), submitting before your slot — <strong>due Wed Sep 16</strong>. His grading mantra: clear goals good, milestones better, <em>measurable deliverables</em> best. Samples are on Brightspace."},
+    {"q": "How is MIS 473 graded?", "tag": "473", "keys": ["473", "grade", "graded", "grading", "breakdown", "weight", "percent"], "a": "Client evaluation 25% · Proposal 15% · Checkpoint 1 15% · Checkpoint 2 15% · Final presentation 15% · Peer evaluations 10% (2×5) · Weekly updates 5%. Notice who holds the biggest single share: <strong>your client</strong>."},
+    {"q": "How much time does MIS 473 take?", "tag": "473", "keys": ["time", "commitment", "hours", "workload", "week", "busy"], "a": "Plan on roughly <strong>10 hours a week outside class</strong> — it's a 4-credit projects course and your client is counting on you. The teams that struggle are the ones that backload; the weekly updates exist to keep you honest."},
+    {"q": "What if my client isn't responding?", "tag": "473", "keys": ["client", "respond", "responding", "unresponsive", "ghost", "stuck", "problem", "communication"], "a": "Don't sit on it. Follow up promptly and professionally, document your attempts in your weekly update, and <strong>loop in Prof. MacDonald early</strong> — client communication issues are normal and fixable, but only if he knows. Silence is the only unrecoverable move."},
+    {"q": "When are MIS 473 final presentations?", "tag": "473", "keys": ["final", "presentation", "presentations", "december", "end"], "a": "<strong>Nov 23 – Dec 7</strong>, in the classroom during class time; your team's slot is scheduled via the Google Sheet. Sample presentations are on Brightspace. A readiness workshop runs Wed Nov 18."},
+    {"q": "What happens at the end of MIS 473?", "tag": "473", "keys": ["end", "handoff", "deliver", "wrap", "evaluations", "transfer"], "a": "By <strong>Friday, Dec 11</strong>: deliver the final product and all project deliverables to your client, transfer ownership of every account, file, credential, and asset, document any agreed post-semester actions — and complete team, client, and peer evaluations. The project isn't done until the client can run it without you."},
+    {"q": "Does MIS 473 meet in class every week?", "tag": "473", "keys": ["every", "week", "meetings", "classroom", "allhands", "all-hands"], "a": "No — it's meeting-driven, not lecture-driven. Some weeks are all-hands classroom sessions (marked \"all students required\"), most are team/client work and scheduled meetings with Prof. MacDonald. The syllabus schedule table tells you which is which; when in doubt, check Brightspace."},
+    {"q": "What is GP1 in MIS 580A?", "tag": "580a", "keys": ["gp1", "ai", "business", "first", "group", "project"], "a": "<strong>GP1: AI in Business</strong> (15%) — weeks 1–6. Teams operate as a C-suite with assigned executive roles, working in phases: framing, evaluating real AI use cases with evidence, then synthesis. Presentations are <strong>Wed Sep 23</strong>, with peer feedback in class."},
+    {"q": "What is the Major Group Project in MIS 580A?", "tag": "580a", "keys": ["major", "group", "project", "gp2", "initiative", "strategic", "40"], "a": "The <strong>Strategic Communication Initiative</strong> (40%) — the back half of the semester. Arc: a 60-second <strong>Friction Brief</strong> pitch (approved or redirected on the spot) → stakeholder mapping → graded midpoint → <strong>a real-world constraint assigned mid-project</strong> → final presentation ending in the <strong>Resistance Test</strong>. Final combined PDF due Tue Dec 8 on Brightspace."},
+    {"q": "What is the Resistance Test?", "tag": "580a", "keys": ["resistance", "test", "adversarial", "qa", "q&a", "skeptical", "vp"], "a": "The finale of your final presentation: a short <strong>adversarial Q&amp;A</strong> where Prof. MacDonald plays a skeptical VP trying to poke holes in your strategy. It's the most realistic four minutes of the semester — real proposals meet real resistance. There's a prep workshop Mon Nov 23."},
+    {"q": "What is the constraint in MIS 580A?", "tag": "580a", "keys": ["constraint", "random", "assigned", "midpoint", "curveball"], "a": "After the midpoint checkpoint (week of Nov 2), each team is assigned a <strong>real-world constraint</strong> its final strategy must operate within — budget cuts, leadership changes, that kind of thing. You can't know yours in advance; that's the point. Strategy that only works under ideal conditions isn't strategy."},
+    {"q": "How is MIS 580A graded?", "tag": "580a", "keys": ["580", "580a", "grade", "graded", "grading", "breakdown", "weight", "percent"], "a": "Major Group Project 40% · Individual labs &amp; assignments 25% · GP1 (AI in Business) 15% · Engagement &amp; participation 10% · Peer review &amp; reflection 10%. Much of the in-class work is completion-based — show up, engage honestly, and the small stuff takes care of itself."},
+    {"q": "What activities happen in MIS 580A?", "tag": "580a", "keys": ["activities", "activity", "fun", "debate", "workshop", "games"], "a": "A sampler: Communication Failure Autopsy · AI Ethics Snowball Debate · Usability Dash · Elevator Pitch Workshop · Channel Audit Walkabout · stakeholder field work · Message Diagnosis Lab · Rapid Usability Challenge · The Judgment Call · The Cold Call · Corporate Telephone · Signal &amp; Noise. Every one exists to train a communication muscle you'll use at work."},
+    {"q": "What is the Friction Brief?", "tag": "580a", "keys": ["friction", "brief", "pitch", "60", "sixty"], "a": "A <strong>60-second pitch</strong> (Oct 19–21) where your team names a real communication friction worth fixing — and gets an approve-or-redirect decision from Prof. MacDonald on the spot. It's the gate into the Major Group Project, and it develops over fall break by design."},
+    {"q": "How does peer review work in MIS 580A?", "tag": "580a", "keys": ["peer", "review", "feedback", "template"], "a": "Peer review &amp; reflection is 10% of the grade. Reviews use a simple fixed template submitted through Brightspace, and the process is walked through in class before anyone leaves the room — no survey-link scavenger hunts."},
+    {"q": "Is MIS 580A a lot of lecturing?", "tag": "580a", "keys": ["lecture", "lecturing", "slides", "talking", "boring"], "a": "No. Design rule: <strong>no lecture block longer than ~35 minutes</strong>, and most are far shorter. Sessions run on timed activity blocks — you'll spend class time doing, presenting, debating, and giving feedback."},
+    {"q": "What can I ask you?", "tag": "meta", "keys": ["what", "ask", "help", "can", "you", "do", "topics"], "a": "Anything about: Prof. MacDonald (background, office, contact) · when and where classes meet · key dates and deadlines · how each course is graded · projects, bidding, checkpoints, and weekly updates (473) · GP1, the Major Group Project, the Resistance Test (580A) · the AI policy. I'm a hand-built FAQ, not an AI — if I whiff, <a href='mailto:jmacdon@binghamton.edu'>email the human</a>."}
+  ]
+}
+</script>
+<!-- ▓▓ END SEMESTER DATA ▓▓ -->
+
+<header>
+  <div class="wrap">
+    <div class="kicker">Binghamton University · School of Management</div>
+    <h1>MacDonald <span class="thin">Course HQ</span></h1>
+    <p class="sub">Everything you actually want to know about Prof. John MacDonald's courses —
+      what's happening now, what's due next, and answers on demand. No appointment necessary.</p>
+    <div class="statusrow">
+      <span class="chip"><span class="dot"></span><span id="status-chip">…</span></span>
+      <span class="chip gold" id="countdown-chip" hidden></span>
+    </div>
+    <nav class="jump">
+      <a href="#now">Right now</a>
+      <a href="#courses">The courses</a>
+      <a href="#ask">Ask me anything</a>
+      <a href="#ai">AI policy + quiz</a>
+      <a href="#about">About Prof. MacDonald</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="now">
+    <div class="h2row"><h2>Right now</h2><span class="tag" id="now-tag"></span></div>
+    <p class="h2sub">Computed fresh every time you load this page.</p>
+    <div class="nowgrid" id="now-grid"></div>
+  </section>
+
+  <section id="courses">
+    <h2>The courses</h2>
+    <p class="h2sub">Two courses, one philosophy: you learn by doing real work for real audiences.</p>
+    <div class="courses" id="course-cards"></div>
+  </section>
+
+  <section id="ask">
+    <h2>Ask me anything <span style="font-weight:400;color:var(--ink-3)">(almost)</span></h2>
+    <p class="h2sub">Instant answers about the courses, deadlines, and policies. Built by hand from the syllabi — not an AI, which the AI-policy section will teach you to appreciate.</p>
+    <div class="chatcard">
+      <div class="chathead">
+        <div class="avatar">🦉</div>
+        <div>
+          <div class="t">The Night Owl</div>
+          <div class="s">Evening classes deserve an evening mascot · answers 24/7</div>
+        </div>
+      </div>
+      <div class="chatlog" id="chat-log" aria-live="polite"></div>
+      <form class="chatbar" id="chat-form">
+        <input id="chat-input" type="text" placeholder="Try: when are office hours? how does bidding work?" autocomplete="off" aria-label="Ask a question">
+        <button type="submit">Ask</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="ai">
+    <h2>The AI policy, in plain English</h2>
+    <p class="h2sub" id="ai-note"></p>
+    <div class="tiers" id="ai-tiers"></div>
+    <div class="quiz" id="quiz">
+      <div class="qnum" id="quiz-num"></div>
+      <div class="scenario" id="quiz-scenario"></div>
+      <div class="opts" id="quiz-opts"></div>
+      <div id="quiz-after"></div>
+    </div>
+  </section>
+
+  <section id="about">
+    <h2>About Prof. MacDonald</h2>
+    <p class="h2sub">The short version, so you can spend office hours on better questions.</p>
+    <div class="about">
+      <div class="acard">
+        <h3 id="prof-name"></h3>
+        <p id="prof-bio"></p>
+        <p style="font-size:13.5px"><em>Fair warning from past students: you will be asked what you think, by name, in class. It's a feature.</em></p>
+      </div>
+      <div class="acard">
+        <h3>The facts</h3>
+        <div id="prof-facts"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><b>This page is a convenience, not a contract.</b> The syllabus and Brightspace are the official sources — if they disagree with anything here, they win.</div>
+    <div>Content compiled from the <span id="ft-sem"></span> syllabi · Last updated <span id="ft-updated"></span> · Spot an error? Email <a href="mailto:jmacdon@binghamton.edu" style="color:var(--ink-2)">jmacdon@binghamton.edu</a>.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const DATA = JSON.parse(document.getElementById("hq-data").textContent);
+  const SEM = DATA.semester;
+
+  // ── date helpers (all local-time; never UTC-parse) ──
+  const d = s => { const [y,m,dd] = s.split("-").map(Number); return new Date(y, m-1, dd); };
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const DAY = 864e5;
+  const mondayOf = dt => { const t = new Date(dt); t.setDate(t.getDate() - ((t.getDay()+6)%7)); return t; };
+  const daysUntil = ds => Math.round((d(ds) - today) / DAY);
+  const fmt = ds => d(ds).toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric"});
+  const fmtShort = ds => d(ds).toLocaleDateString("en-US", {month:"short", day:"numeric"});
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+  const weekNum = Math.floor((mondayOf(today) - mondayOf(d(SEM.weekOneMonday))) / (7*DAY)) + 1;
+  const inBreak = SEM.breaks.find(b => today >= d(b.start) && today <= d(b.end));
+  const phase = today < d(SEM.firstClass) ? "pre" :
+                today > d(SEM.finalsEnd)  ? "post" :
+                today > d(SEM.lastClass)  ? "finals" : "live";
+
+  // ── header status chip ──
+  const chip = document.getElementById("status-chip");
+  if (phase === "pre") {
+    const n = daysUntil(SEM.firstClass);
+    chip.textContent = n === 0 ? SEM.label + " starts TODAY" :
+      SEM.label + " starts in " + n + " day" + (n===1?"":"s") + " — " + fmt(SEM.firstClass);
+  } else if (phase === "post") {
+    chip.textContent = SEM.label + " is a wrap. See you next semester!";
+  } else if (phase === "finals") {
+    chip.textContent = "Finals week · almost there";
+  } else if (inBreak) {
+    chip.textContent = "Week " + weekNum + " · " + inBreak.label + " — no classes";
+  } else {
+    chip.textContent = "Week " + weekNum + " · " + SEM.label;
+  }
+
+  // ── countdown chip: next key date across everything ──
+  const allDates = [];
+  DATA.universityDates.forEach(k => allDates.push(Object.assign({scope:"University"}, k)));
+  DATA.courses.forEach(c => c.keyDates.forEach(k => allDates.push(Object.assign({scope:c.code}, k))));
+  allDates.sort((a,b) => d(a.date) - d(b.date));
+  const nextEvt = allDates.find(k => daysUntil(k.date) >= 0);
+  if (nextEvt && phase !== "post") {
+    const n = daysUntil(nextEvt.date);
+    const cd = document.getElementById("countdown-chip");
+    cd.hidden = false;
+    cd.textContent = "Next: " + nextEvt.label + " · " + fmt(nextEvt.date) +
+      (nextEvt.time ? " " + nextEvt.time : "") +
+      (n === 0 ? " — TODAY" : n === 1 ? " — tomorrow" : " — in " + n + " days");
+  }
+
+  // ── "Right now" cards ──
+  document.getElementById("now-tag").textContent =
+    today.toLocaleDateString("en-US", {weekday:"long", month:"long", day:"numeric", year:"numeric"});
+  const nowGrid = document.getElementById("now-grid");
+  DATA.courses.forEach(c => {
+    let cur = c.phases.find(p => today >= d(p.from) && today <= d(p.to));
+    let label = "Right now";
+    if (!cur) {
+      cur = c.phases.find(p => today < d(p.from));
+      label = cur ? "Up next" : null;
+      if (!cur) cur = {title: "Semester complete", detail: "Grades wrap up soon. Thanks for a great semester."};
+    }
+    const nk = c.keyDates.find(k => daysUntil(k.date) >= 0);
+    let nextLine = "";
+    if (nk) {
+      const n = daysUntil(nk.date);
+      nextLine = "<div class='next'>Next up: <b>" + esc(nk.label) + "</b> — " + fmt(nk.date) +
+        (nk.time ? ", " + nk.time : "") + (n===0 ? " (today!)" : n===1 ? " (tomorrow)" : " (in " + n + " days)") + "</div>";
+    }
+    nowGrid.insertAdjacentHTML("beforeend",
+      "<div class='nowcard'><div class='course'>" + esc(c.code) + (label ? " · " + label : "") + "</div>" +
+      "<div class='phase'>" + esc(cur.title) + "</div>" +
+      "<div class='detail'>" + esc(cur.detail) + "</div>" + nextLine + "</div>");
+  });
+
+  // ── course cards ──
+  const cardsEl = document.getElementById("course-cards");
+  DATA.courses.forEach(c => {
+    const bars = c.grading.map(g =>
+      "<div class='gr'><div class='lbl'><span class='n'>" + esc(g.item) + "</span><span class='v'>" + g.pct + "%</span></div>" +
+      "<div class='track'><div class='fill' style='width:" + (g.pct/40*100) + "%'></div></div></div>").join("");
+    const merged = c.keyDates.concat(DATA.universityDates).sort((a,b) => d(a.date) - d(b.date));
+    const nextIdx = merged.findIndex(k => daysUntil(k.date) >= 0);
+    const dates = merged.map((k,i) => {
+      const cls = daysUntil(k.date) < 0 ? " class='past'" : (i === nextIdx ? " class='next-up'" : "");
+      return "<li" + cls + "><span class='d'>" + fmtShort(k.date) + "</span><span>" + esc(k.label) +
+        (k.time ? " · " + esc(k.time) : "") + "</span></li>";
+    }).join("");
+    cardsEl.insertAdjacentHTML("beforeend",
+      "<div class='ccard'><div class='chead'>" +
+      "<div class='code'>" + esc(c.code) + " · " + esc(c.level) + "</div>" +
+      "<h3>" + esc(c.title) + "</h3>" +
+      "<div class='tagline'>“" + esc(c.tagline) + "”</div>" +
+      "<div class='meta'><span>📅 " + esc(c.meets) + "</span><span>📍 " + esc(c.room) + "</span></div>" +
+      "</div><div class='cbody'>" +
+      "<p>" + esc(c.desc) + "</p>" +
+      "<h4>Where your grade comes from</h4>" + bars +
+      "<h4>Key dates</h4><ul class='dates'>" + dates + "</ul>" +
+      "</div></div>");
+  });
+
+  // ── chat ──
+  const log = document.getElementById("chat-log");
+  const input = document.getElementById("chat-input");
+  const FAQ = DATA.faq;
+
+  const SYN = {
+    prof:"professor", teacher:"professor", instructor:"professor", john:"macdonald", mac:"macdonald",
+    chatgpt:"ai", gpt:"ai", claude:"ai", copilot:"ai", gemini:"ai", llm:"ai", artificial:"ai",
+    hrs:"hours", oh:"office", mail:"email", prof473:"473", "573":"473", "480a":"580a", "480":"580a", "580":"580a",
+    hw:"assignments", homework:"assignments", due:"deadline", dates:"deadline", exam:"final", tests:"final",
+    presentation:"presentations", checkpoint:"checkpoints", eval:"evaluations", partner:"team", groups:"group"
+  };
+  const STOP = new Set(["the","a","an","is","are","do","does","i","in","of","to","for","and","or","my","me","it","on","at","how","be","will","with","we","us","our","this","that"]);
+  const tokenize = s => s.toLowerCase().replace(/[^a-z0-9\s&-]/g," ").split(/[\s-]+/)
+    .filter(t => t && !STOP.has(t)).map(t => SYN[t] || t);
+
+  function bestMatch(q){
+    const toks = [...new Set(tokenize(q))];
+    const ql = q.toLowerCase();
+    let best = null, bestScore = 0;
+    FAQ.forEach(f => {
+      let s = 0;
+      const fq = f.q.toLowerCase();
+      toks.forEach(t => {
+        if (f.keys.includes(t)) s += 3;
+        if (fq.includes(t)) s += 1;
+      });
+      if (ql.length > 8 && fq.includes(ql)) s += 8;
+      if (s > bestScore){ bestScore = s; best = f; }
+    });
+    return {best, score: bestScore};
+  }
+
+  function addMsg(html, who){
+    const el = document.createElement("div");
+    el.className = "msg " + who;
+    el.innerHTML = html;
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function addChips(items){
+    const box = document.createElement("div");
+    box.className = "chips";
+    items.forEach(f => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.textContent = f.q;
+      b.addEventListener("click", () => ask(f.q, f));
+      box.appendChild(b);
+    });
+    log.appendChild(box);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  const pick = (arr, n, excl) => {
+    const pool = arr.filter(f => f !== excl);
+    const out = [];
+    while (out.length < n && pool.length){
+      out.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]);
+    }
+    return out;
+  };
+
+  function ask(q, exact){
+    addMsg(esc(q), "user");
+    document.querySelectorAll(".chips").forEach(c => c.remove());
+    const {best, score} = exact ? {best: exact, score: 99} : bestMatch(q);
+    setTimeout(() => {
+      if (best && score >= 4){
+        addMsg(best.a, "bot");
+        addChips(pick(FAQ.filter(f => f.tag === best.tag), 2, best).concat(pick(FAQ, 1, best)));
+      } else if (best && score >= 2){
+        addMsg("I <em>think</em> you're asking: “" + esc(best.q) + "” — here's that answer:<br><br>" + best.a +
+          "<span class='src'>Not what you meant? Try different words, or use a suggestion below.</span>", "bot");
+        addChips(pick(FAQ, 3, best));
+      } else {
+        addMsg("Hmm, that one's beyond my little owl brain. 🦉 I'm a hand-built FAQ, not an AI — try rephrasing, tap a suggestion below, or go straight to the source: <a href='mailto:jmacdon@binghamton.edu'>jmacdon@binghamton.edu</a>. For anything official, the syllabus on Brightspace wins.", "bot");
+        addChips(pick(FAQ, 3, null));
+      }
+    }, 250);
+  }
+
+  document.getElementById("chat-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const q = input.value.trim();
+    if (!q) return;
+    input.value = "";
+    ask(q);
+  });
+
+  // greeting
+  const hr = now.getHours();
+  const greet = hr < 5 ? "Burning the midnight oil? Respect." : hr < 12 ? "Good morning!" : hr < 18 ? "Good afternoon!" : "Good evening — my favorite time.";
+  addMsg(greet + " I'm the Night Owl 🦉 — I answer questions about Prof. MacDonald and his " + SEM.label +
+    " courses, any hour. I'm a hand-built FAQ (not an AI — ask me about the AI policy and you'll see why the difference matters). What do you want to know?", "bot");
+  addChips(pick(FAQ, 4, null));
+
+  // ── AI policy + quiz ──
+  document.getElementById("ai-note").textContent = DATA.aiPolicy.note;
+  const tiersEl = document.getElementById("ai-tiers");
+  DATA.aiPolicy.tiers.forEach(t => {
+    tiersEl.insertAdjacentHTML("beforeend",
+      "<div class='tier'><span class='badge'>" + esc(t.name) + "</span>" +
+      "<h4>" + esc(t.short) + "</h4><p>" + esc(t.desc) + "</p></div>");
+  });
+
+  const QUIZ = DATA.aiPolicy.quiz;
+  const OPTS = DATA.aiPolicy.tiers.map(t => t.name).concat(["🚫 Not allowed here"]);
+  let qi = 0, qscore = 0;
+  const qNum = document.getElementById("quiz-num"),
+        qScn = document.getElementById("quiz-scenario"),
+        qOpts = document.getElementById("quiz-opts"),
+        qAfter = document.getElementById("quiz-after");
+
+  function renderQ(){
+    qAfter.innerHTML = "";
+    if (qi >= QUIZ.length){
+      qNum.textContent = "Results";
+      qScn.textContent = qscore + " / " + QUIZ.length + " — " +
+        (qscore === QUIZ.length ? "Perfect. Your disclosure statements will be a joy to read." :
+         qscore >= QUIZ.length - 1 ? "Solid. You clearly get the framework." :
+         "Worth a re-read of the tiers above — then try again.");
+      qOpts.innerHTML = "";
+      const rb = document.createElement("button");
+      rb.className = "nextbtn"; rb.textContent = "Try again";
+      rb.addEventListener("click", () => { qi = 0; qscore = 0; renderQ(); });
+      qAfter.appendChild(rb);
+      return;
+    }
+    const item = QUIZ[qi];
+    qNum.textContent = "Which tier is it? · " + (qi+1) + " of " + QUIZ.length;
+    qScn.textContent = item.scenario;
+    qOpts.innerHTML = "";
+    OPTS.forEach((o, idx) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = o;
+      b.addEventListener("click", () => {
+        [...qOpts.children].forEach(x => x.disabled = true);
+        if (idx === item.answer){ b.classList.add("right"); qscore++; }
+        else { b.classList.add("wrong"); qOpts.children[item.answer].classList.add("right"); }
+        qAfter.innerHTML = "<div class='verdict'>" + (idx === item.answer ? "✅ Exactly. " : "Not quite — it's <strong>" +
+          esc(OPTS[item.answer]) + "</strong>. ") + esc(item.explain) + "</div>";
+        const nb = document.createElement("button");
+        nb.className = "nextbtn";
+        nb.textContent = qi === QUIZ.length - 1 ? "See results" : "Next scenario";
+        nb.addEventListener("click", () => { qi++; renderQ(); });
+        qAfter.appendChild(nb);
+      });
+      qOpts.appendChild(b);
+    });
+  }
+  renderQ();
+
+  // ── about + footer ──
+  const P = DATA.instructor;
+  document.getElementById("prof-name").textContent = P.name;
+  document.getElementById("prof-bio").textContent = P.bio;
+  document.getElementById("prof-facts").innerHTML =
+    "<div class='factline'><span class='k'>Email</span><span><a href='mailto:" + P.email + "' style='color:var(--green);font-weight:600'>" + P.email + "</a></span></div>" +
+    "<div class='factline'><span class='k'>Office</span><span>" + esc(P.office) + "</span></div>" +
+    "<div class='factline'><span class='k'>Office hours</span><span>" + esc(P.officeHours) + "</span></div>" +
+    "<div class='factline'><span class='k'>Day job</span><span>Manager of DesignOps, Cisco</span></div>" +
+    "<div class='factline'><span class='k'>This semester</span><span>" + DATA.courses.map(c => c.code).join(" · ") + " (" + SEM.label + ")</span></div>";
+  document.getElementById("ft-sem").textContent = SEM.label;
+  document.getElementById("ft-updated").textContent = SEM.dataUpdated;
+})();
+</script>
+</body>
+</html>
