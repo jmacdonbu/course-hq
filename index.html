@@ -156,20 +156,20 @@
     padding:4px 10px; border-radius:6px; margin-bottom:10px; background:var(--green-soft); color:var(--green)}
   .tier h4{font-size:16px; margin-bottom:6px}
   .tier p{font-size:13.5px; color:var(--ink-2)}
-  .quiz{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px 24px}
-  .quiz .qnum{font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--accent)}
-  .quiz .scenario{font-size:16.5px; font-weight:600; margin:8px 0 16px}
-  .quiz .opts{display:flex; flex-wrap:wrap; gap:10px}
-  .quiz .opts button{
+  .tiercheck{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px 24px}
+  .tiercheck .qnum{font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--accent)}
+  .tiercheck .scenario{font-size:16.5px; font-weight:600; margin:8px 0 16px}
+  .tiercheck .opts{display:flex; flex-wrap:wrap; gap:10px}
+  .tiercheck .opts button{
     padding:9px 16px; font-size:14px; font-weight:600; border-radius:10px; cursor:pointer;
     background:var(--paper); border:1.5px solid var(--line); color:var(--ink);
   }
-  .quiz .opts button:hover{border-color:var(--green); color:var(--green)}
-  .quiz .opts button:disabled{cursor:default; opacity:.55}
-  .quiz .opts button.right{background:var(--green); border-color:var(--green); color:#fff; opacity:1}
-  .quiz .opts button.wrong{border-color:#b3543f; color:#b3543f; opacity:1}
-  .quiz .verdict{margin-top:16px; padding:14px 16px; border-radius:10px; font-size:14.5px; background:var(--green-soft); border:1px solid var(--line)}
-  .quiz .nextbtn{margin-top:14px; padding:9px 18px; font-weight:700; font-size:14px; color:#fff; background:var(--green); border:none; border-radius:10px; cursor:pointer}
+  .tiercheck .opts button:hover{border-color:var(--green); color:var(--green)}
+  .tiercheck .opts button:disabled{cursor:default; opacity:.55}
+  .tiercheck .opts button.right{background:var(--green); border-color:var(--green); color:#fff; opacity:1}
+  .tiercheck .opts button.wrong{border-color:#b3543f; color:#b3543f; opacity:1}
+  .tiercheck .verdict{margin-top:16px; padding:14px 16px; border-radius:10px; font-size:14.5px; background:var(--green-soft); border:1px solid var(--line)}
+  .tiercheck .nextbtn{margin-top:14px; padding:9px 18px; font-weight:700; font-size:14px; color:#fff; background:var(--green); border:none; border-radius:10px; cursor:pointer}
 
   /* ── about ───────────────────────────────── */
   .about{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px}
@@ -207,7 +207,7 @@
     "firstClass": "2026-08-19",
     "lastClass": "2026-12-08",
     "finalsEnd": "2026-12-16",
-    "dataUpdated": "July 12, 2026",
+    "dataUpdated": "July 18, 2026",
     "breaks": [
       {"start": "2026-10-10", "end": "2026-10-18", "label": "Fall Break"},
       {"start": "2026-11-25", "end": "2026-11-29", "label": "Thanksgiving Break"}
@@ -217,7 +217,7 @@
     "name": "John E. MacDonald IV",
     "email": "jmacdon@binghamton.edu",
     "office": "AA-246, School of Management",
-    "officeHours": "Typically right after class Mon & Wed (~8:30 PM) and by appointment — the syllabus has the official line.",
+    "officeHours": "Mon & Wed, right after class (~8:30 PM), in AA-202 — in-person only, no online option — and by appointment via email.",
     "bio": "By day, John manages DesignOps at Cisco. Before that: IBM, and years of retail management. He teaches the way he works — real problems, real stakeholders, real deadlines — which is why you will build things and talk to people in his classes instead of watching slides."
   },
   "courses": [
@@ -233,9 +233,10 @@
       "grading": [
         {"item": "Client evaluation", "pct": 25},
         {"item": "Project proposal", "pct": 15},
-        {"item": "Checkpoint 1", "pct": 15},
-        {"item": "Checkpoint 2", "pct": 15},
         {"item": "Final presentation", "pct": 15},
+        {"item": "Checkpoint 1", "pct": 10},
+        {"item": "Checkpoint 2", "pct": 10},
+        {"item": "Checkpoint 3", "pct": 10},
         {"item": "Peer evaluations (×2)", "pct": 10},
         {"item": "Weekly updates", "pct": 5}
       ],
@@ -243,12 +244,14 @@
         {"from": "2026-08-17", "to": "2026-08-23", "title": "Launch & Bidding", "detail": "Course overview Wed Aug 19 (required). Team leaders email bids by Fri Aug 21, noon; projects assigned by Sunday."},
         {"from": "2026-08-24", "to": "2026-09-06", "title": "Client Discovery", "detail": "Contact your client within days, hold first meetings, and work on your Team Compact & Project Proposal."},
         {"from": "2026-09-07", "to": "2026-09-16", "title": "Proposal Reviews", "detail": "Proposal + Team Compact reviews with Prof. MacDonald (schedule via Google Sheet); submit before your meeting. Due Wed Sep 16."},
-        {"from": "2026-09-17", "to": "2026-09-27", "title": "Build Phase", "detail": "Heads-down project work. Weekly Updates begin: first one due Mon Sep 21, 8 PM — then every Monday."},
+        {"from": "2026-09-17", "to": "2026-09-22", "title": "Build Phase", "detail": "Heads-down project work. Weekly Updates begin: first one due Mon Sep 21, 8 PM — then every Monday."},
+        {"from": "2026-09-23", "to": "2026-09-23", "title": "Proposal Debrief + CP1 Kickoff", "detail": "All-hands, required: proposal feedback themes and guidance, plus a preview of Checkpoint 1 format and expectations."},
         {"from": "2026-09-28", "to": "2026-10-09", "title": "Checkpoint 1", "detail": "Checkpoint meetings during class time; submit to Brightspace before your meeting. Submissions due Tue Oct 6."},
         {"from": "2026-10-10", "to": "2026-10-18", "title": "Fall Break", "detail": "No classes. Tell your client your availability in advance."},
-        {"from": "2026-10-19", "to": "2026-10-25", "title": "Midpoint", "detail": "All-hands Mon Oct 19: status, Checkpoint 1 lessons learned, second-half planning. Peer review due Fri Oct 23."},
-        {"from": "2026-10-26", "to": "2026-11-11", "title": "Checkpoint 2", "detail": "Checkpoint meetings during class time; submit before your meeting."},
-        {"from": "2026-11-12", "to": "2026-11-22", "title": "Final Prep", "detail": "Presentation & project-readiness workshop Wed Nov 18 (required)."},
+        {"from": "2026-10-19", "to": "2026-10-20", "title": "Midpoint", "detail": "All-hands Mon Oct 19: status, Checkpoint 1 lessons learned, second-half planning."},
+        {"from": "2026-10-21", "to": "2026-11-02", "title": "Checkpoint 2", "detail": "Checkpoint meetings during class time; submit before your meeting. Mid-semester peer review due Fri Oct 23; withdrawal deadline Thu Oct 29."},
+        {"from": "2026-11-03", "to": "2026-11-16", "title": "Checkpoint 3", "detail": "New this fall. Checkpoint meetings during class time; submit before your meeting."},
+        {"from": "2026-11-17", "to": "2026-11-22", "title": "Final Prep", "detail": "Presentation & project-readiness workshop Wed Nov 18 (required)."},
         {"from": "2026-11-23", "to": "2026-12-08", "title": "Final Presentations", "detail": "In the classroom during class time; schedule via Google Sheet. No class Wed Nov 25."},
         {"from": "2026-12-09", "to": "2026-12-16", "title": "Wrap-Up", "detail": "By Fri Dec 11: team, client & peer evaluations; deliver everything to your client and transfer ownership of all accounts and assets."}
       ],
@@ -257,10 +260,12 @@
         {"date": "2026-08-21", "label": "Team leaders email project bids", "time": "noon"},
         {"date": "2026-09-16", "label": "Project Proposal + Team Compact due"},
         {"date": "2026-09-21", "label": "First Weekly Update due (then every Mon)", "time": "8:00 PM"},
+        {"date": "2026-09-23", "label": "Proposal debrief + Checkpoint 1 kickoff — required"},
         {"date": "2026-10-06", "label": "Checkpoint 1 submission due"},
         {"date": "2026-10-19", "label": "Midpoint all-hands — required"},
         {"date": "2026-10-23", "label": "Mid-semester peer review due"},
-        {"date": "2026-10-26", "label": "Checkpoint 2 meetings begin (through Nov 11)"},
+        {"date": "2026-10-30", "label": "Checkpoint 2 submission due"},
+        {"date": "2026-11-13", "label": "Checkpoint 3 submission due"},
         {"date": "2026-11-18", "label": "Final-presentation readiness workshop — required"},
         {"date": "2026-11-23", "label": "Final presentations begin (through Dec 7)"},
         {"date": "2026-12-11", "label": "Client/peer evals + full client handoff due"}
@@ -276,11 +281,9 @@
       "tagline": "You will not sit through lectures. You will do things.",
       "desc": "A hands-on seminar on communicating strategically inside organizations — hierarchy, audiences, channels, influence. Every session is built from timed activities: debates, role-plays, usability challenges, field work, pitch workshops. Two group projects anchor the semester: GP1 (AI in Business) and a semester-long Strategic Communication Initiative that ends in a final presentation with a live adversarial Q&A.",
       "grading": [
-        {"item": "Major Group Project", "pct": 40},
-        {"item": "Individual labs & assignments", "pct": 25},
-        {"item": "GP1: AI in Business", "pct": 15},
-        {"item": "Engagement & participation", "pct": 10},
-        {"item": "Peer review & reflection", "pct": 10}
+        {"item": "Individual labs & assignments", "pct": 50},
+        {"item": "Major Group Project", "pct": 35},
+        {"item": "GP1: AI in Business", "pct": 15}
       ],
       "phases": [
         {"from": "2026-08-17", "to": "2026-08-23", "title": "Kickoff", "detail": "First session Wed Aug 19: overview, meet & greet, GP1 (AI in Business) team formation and launch."},
@@ -290,7 +293,7 @@
         {"from": "2026-09-28", "to": "2026-10-09", "title": "Major Project Launch", "detail": "AI ethics debate, collaboration-platform norms, Channel Audit Walkabout — and the Strategic Communication Initiative kicks off."},
         {"from": "2026-10-10", "to": "2026-10-18", "title": "Fall Break", "detail": "No classes. Teams develop their Friction Brief; individual field observation continues."},
         {"from": "2026-10-19", "to": "2026-11-01", "title": "Stakeholders", "detail": "Friction Brief pitches (instructor approval on the spot), stakeholder mapping, personas, targeted communication."},
-        {"from": "2026-11-02", "to": "2026-11-08", "title": "Midpoint + Constraint", "detail": "Graded midpoint checkpoint — and each team receives its assigned real-world constraint."},
+        {"from": "2026-11-02", "to": "2026-11-08", "title": "Midpoint + Constraint", "detail": "Graded midpoint pitch (lightweight) — pivoting on feedback still counts in your favor — then each team receives its assigned real-world constraint."},
         {"from": "2026-11-09", "to": "2026-11-22", "title": "Sharpen", "detail": "Visual communication challenge, presentation practice, Rapid Usability Challenge, The Judgment Call, The Cold Call."},
         {"from": "2026-11-23", "to": "2026-11-29", "title": "Resistance Prep", "detail": "Presentation skills workshop + Resistance Test preparation Mon Nov 23. Nothing due over Thanksgiving — on purpose."},
         {"from": "2026-11-30", "to": "2026-12-06", "title": "Final Presentations", "detail": "Nov 30 – Dec 2, ending with the Resistance Test: a short adversarial Q&A."},
@@ -298,14 +301,27 @@
       ],
       "keyDates": [
         {"date": "2026-08-19", "label": "First class — GP1 kickoff", "time": "6:45 PM"},
-        {"date": "2026-09-23", "label": "GP1 presentations (graded)"},
+        {"date": "2026-09-02", "label": "Elevator Pitch Workshop due (in class)"},
+        {"date": "2026-09-09", "label": "Communication Failure Autopsy + Usability Dash due (in class)"},
+        {"date": "2026-09-13", "label": "Strategic Rewrite due"},
+        {"date": "2026-09-22", "label": "GP1 deliverables due"},
+        {"date": "2026-09-23", "label": "GP1 presentations (graded) + peer feedback due in class"},
         {"date": "2026-09-28", "label": "Major Group Project launch window begins"},
+        {"date": "2026-10-05", "label": "MS Teams Exploration due"},
+        {"date": "2026-10-07", "label": "Channel Audit Walkabout due"},
         {"date": "2026-10-19", "label": "Friction Brief pitches (Oct 19–21)"},
+        {"date": "2026-10-21", "label": "Field Observation due"},
+        {"date": "2026-10-28", "label": "Signal & Noise (in class)"},
         {"date": "2026-11-02", "label": "Midpoint checkpoint + constraint assigned (Nov 2–4)"},
-        {"date": "2026-11-23", "label": "Resistance Test prep workshop"},
-        {"date": "2026-11-30", "label": "Final presentations (Nov 30 – Dec 2)"},
+        {"date": "2026-11-09", "label": "Visual Communication Challenge (in class)"},
+        {"date": "2026-11-11", "label": "Something You Love reflection due"},
+        {"date": "2026-11-16", "label": "Rapid Usability scoring card (in room)"},
+        {"date": "2026-11-20", "label": "The Judgment Call due"},
+        {"date": "2026-11-23", "label": "The Cold Call due; Resistance Test prep workshop"},
+        {"date": "2026-11-30", "label": "Final presentations begin (through Dec 2); Strategy Brief due"},
         {"date": "2026-12-07", "label": "Course close: synthesis & reflection"},
-        {"date": "2026-12-08", "label": "Final project submission due on Brightspace"}
+        {"date": "2026-12-08", "label": "Final project submission due on Brightspace"},
+        {"date": "2026-12-10", "label": "GP2 Post-Presentation Reflection due"}
       ]
     }
   ],
@@ -322,14 +338,14 @@
   "aiPolicy": {
     "note": "Both courses use the same disclosure framework. AI use is welcome in most work — what matters is honesty about how you used it. Major submissions require a disclosure statement naming the tier. A few in-class activities are explicitly NO-AI (they are announced as such, e.g. the Usability Dash) because the skill being trained is yours, not the tool's.",
     "tiers": [
-      {"name": "AI-Assisted", "short": "You did the work; AI helped around the edges.", "desc": "Brainstorming, critique of your draft, grammar and wording cleanup, formatting help. The substance and structure are yours."},
-      {"name": "AI-Iterated", "short": "You and AI traded drafts.", "desc": "AI produced meaningful chunks or structure that you substantially reshaped, rewrote, and directed over multiple rounds. Shared authorship, your judgment in charge."},
-      {"name": "AI-Generated", "short": "AI produced the substance.", "desc": "AI created the core content and you curated, verified, and lightly edited it. Allowed where stated — but you own every claim in it, so verify everything."}
+      {"name": "AI-Assisted", "short": "Used for brainstorming or outlining (human-led).", "desc": "Official syllabus definition, verbatim. AI helped you get started — brainstorm ideas or sketch an outline — but you did the actual writing."},
+      {"name": "AI-Iterated", "short": "Used to refine tone or structure (collaborative).", "desc": "Official syllabus definition, verbatim. You had a draft; you and AI worked together, back and forth, to refine its tone or structure."},
+      {"name": "AI-Generated", "short": "Substantial portions drafted by AI (AI-led, but fact-checked by human).", "desc": "Official syllabus definition, verbatim. AI drafted the substance; you're responsible for checking and standing behind every claim before submitting."}
     ],
-    "quiz": [
-      {"scenario": "You wrote your whole proposal yourself, then asked an AI to fix grammar and tighten the wording.", "answer": 0, "explain": "The substance and structure are yours; AI polished the edges. That's AI-Assisted. Disclose it on a major submission anyway."},
-      {"scenario": "You gave an AI your outline, it drafted the sections, and you spent an evening reorganizing, rewriting, and re-prompting until it matched what you actually wanted to say.", "answer": 1, "explain": "Real contribution from the AI, substantially reshaped by you over multiple rounds — that's AI-Iterated."},
-      {"scenario": "You prompted an AI for a complete first draft, checked the facts, changed a few sentences, and submitted it.", "answer": 2, "explain": "AI produced the substance; you curated and verified. That's AI-Generated — allowed where stated, but you own every claim in it."},
+    "tierCheck": [
+      {"scenario": "An AI helped you brainstorm a few possible angles and sketch a rough outline for your proposal — then you wrote every word of the actual document yourself.", "answer": 0, "explain": "Brainstorming or outlining, human-led — that's the official definition of AI-Assisted."},
+      {"scenario": "You wrote a full first draft yourself, then spent an evening going back and forth with an AI to tighten the tone and reorganize a couple of sections.", "answer": 1, "explain": "You had the draft; AI helped refine tone and structure together over multiple rounds — that's AI-Iterated."},
+      {"scenario": "You prompted an AI for a complete first draft, checked the facts, changed a few sentences, and submitted it.", "answer": 2, "explain": "AI drafted the substance; you fact-checked and lightly edited it — that's AI-Generated. You still own every claim in it."},
       {"scenario": "It's the in-class Usability Dash in MIS 580A and you quietly open an AI tab to critique the artifact for you.", "answer": 3, "explain": "Some in-class activities are explicitly NO-AI — the Usability Dash is one. The skill being trained there is your eye, not the tool's."},
       {"scenario": "An AI suggested five possible angles for your presentation; you picked one and built the whole thing yourself.", "answer": 0, "explain": "Idea-stage brainstorming with all the actual work done by you — AI-Assisted."}
     ]
@@ -337,13 +353,13 @@
   "faq": [
     {"q": "Who is Professor MacDonald?", "tag": "about", "keys": ["who", "macdonald", "professor", "background", "bio", "cisco", "ibm", "industry"], "a": "John E. MacDonald IV manages DesignOps at Cisco by day; before that he was at IBM, and before <em>that</em> he ran retail teams. He teaches the way industry actually works: real problems, real stakeholders, real deadlines. Expect activities and conversations, not lecture marathons."},
     {"q": "How do I contact Professor MacDonald?", "tag": "about", "keys": ["contact", "email", "reach", "message", "question"], "a": "Email <a href='mailto:jmacdon@binghamton.edu'>jmacdon@binghamton.edu</a>. His office is AA-246 in the School of Management. For anything about your grade or your team, email is the right channel."},
-    {"q": "When are office hours?", "tag": "about", "keys": ["office", "hours", "officehours", "meet", "appointment", "talk", "help"], "a": "Typically right after class on Mon &amp; Wed (~8:30 PM), and by appointment — just email <a href='mailto:jmacdon@binghamton.edu'>jmacdon@binghamton.edu</a>. Check the syllabus for the official line and location."},
+    {"q": "When are office hours?", "tag": "about", "keys": ["office", "hours", "officehours", "meet", "appointment", "talk", "help", "aa202", "aa-202"], "a": "Mon &amp; Wed, right after class (~8:30 PM), in <strong>AA-202</strong> — in-person only, no online option — and by appointment via email at <a href='mailto:jmacdon@binghamton.edu'>jmacdon@binghamton.edu</a>."},
     {"q": "Where is his office?", "tag": "about", "keys": ["office", "where", "aa246", "aa-246", "room", "located"], "a": "AA-246, in the Academic A building (School of Management)."},
     {"q": "When and where does class meet?", "tag": "general", "keys": ["when", "where", "class", "meet", "time", "room", "schedule", "location", "cw214", "cw-214"], "a": "Both courses meet Monday &amp; Wednesday in <strong>CW-214</strong>: MIS 473 at <strong>5:00–6:30 PM</strong> and MIS 580A at <strong>6:45–8:15 PM</strong>. Heads up: Tue Sep 8 runs a <em>Monday</em> schedule."},
     {"q": "When is the first class?", "tag": "general", "keys": ["first", "start", "begin", "august", "day"], "a": "<strong>Wednesday, August 19</strong> — and it matters. MIS 473 launches project bidding that day, and MIS 580A forms GP1 teams. Be there."},
     {"q": "Is there a final exam?", "tag": "general", "keys": ["final", "exam", "finals", "test"], "a": "No final exam in either course. 🎉 Instead: MIS 473 ends with final client presentations (Nov 23 – Dec 7) and project handoff; MIS 580A ends with final presentations + the Resistance Test (Nov 30 – Dec 2) and a final submission due Dec 8."},
     {"q": "What is the teaching style like?", "tag": "general", "keys": ["teaching", "style", "lecture", "boring", "like", "expect", "format"], "a": "Anti-lecture. Sessions are built from timed activity blocks — workshops, debates, role-plays, pitches, field work. In 580A no lecture block runs longer than ~35 minutes. If you want to sit quietly in the back, these are the wrong courses; if you want to practice things that matter at work, welcome."},
-    {"q": "Do I have to come to class?", "tag": "general", "keys": ["attendance", "attend", "come", "skip", "miss", "absent", "required"], "a": "The in-class work <em>is</em> the course. In MIS 473, all-hands sessions are explicitly marked \"all students required\"; other weeks are client/team meetings. In MIS 580A, activities and engagement (10% of your grade) happen in the room. Official attendance policy: see the syllabus. If you must miss a session, email ahead."},
+    {"q": "Do I have to come to class?", "tag": "general", "keys": ["attendance", "attend", "come", "skip", "miss", "absent", "required"], "a": "The in-class work <em>is</em> the course. In MIS 473, all-hands sessions are explicitly marked \"all students required\"; other weeks are client/team meetings. In MIS 580A, half your grade (Individual Labs & Assignments, 50%) comes from in-class/completion work — showing up is how you earn it. Official attendance policy: see the syllabus. If you must miss a session, email ahead."},
     {"q": "Is there a textbook?", "tag": "general", "keys": ["textbook", "book", "buy", "materials", "readings"], "a": "This page doesn't track materials — check the syllabus on Brightspace for the official answer. Historically these courses run on real work rather than textbook chapters."},
     {"q": "When is the add/drop deadline?", "tag": "general", "keys": ["add", "drop", "adddrop", "deadline", "register", "enroll"], "a": "<strong>Monday, August 31, 11:59 PM.</strong> The withdrawal deadline is Thursday, October 29."},
     {"q": "When can I withdraw?", "tag": "general", "keys": ["withdraw", "withdrawal", "w", "deadline"], "a": "The withdrawal deadline is <strong>Thursday, October 29, 11:59 PM</strong>. If you're considering it, talk to Prof. MacDonald first — there's often a fixable problem underneath."},
@@ -351,30 +367,30 @@
     {"q": "What about Thanksgiving?", "tag": "general", "keys": ["thanksgiving", "november", "turkey", "break"], "a": "No class Wed Nov 25 (break runs Nov 25–29). In MIS 580A, <strong>nothing is due over Thanksgiving</strong> — that's deliberate. MIS 473 final presentations resume Mon Nov 30."},
     {"q": "Why does Tuesday Sep 8 have class?", "tag": "general", "keys": ["tuesday", "september", "labor", "monday", "makeup", "conversion", "sep"], "a": "Labor Day (Mon Sep 7) is a no-class day, so the university runs a <strong>Monday schedule on Tuesday, September 8</strong>. Your Monday class meets that Tuesday. Also: no class Mon Sep 21 (Yom Kippur)."},
     {"q": "Is this page official?", "tag": "general", "keys": ["official", "page", "site", "trust", "accurate", "syllabus"], "a": "No — this is a convenience layer. The <strong>syllabus and Brightspace are official</strong>. If this page and the syllabus ever disagree, the syllabus wins. Spot an error? Tell Prof. MacDonald."},
-    {"q": "Can I use AI / ChatGPT in these courses?", "tag": "policy", "keys": ["ai", "chatgpt", "gpt", "claude", "copilot", "allowed", "use", "cheating", "artificial"], "a": "Yes — openly. Both courses use a three-tier disclosure framework: <strong>AI-Assisted</strong>, <strong>AI-Iterated</strong>, and <strong>AI-Generated</strong>. Major submissions need a disclosure naming the tier. A few in-class activities are explicitly NO-AI because the skill being trained is yours. Scroll to the AI Policy section on this page and try the quiz."},
-    {"q": "What do the three AI tiers mean?", "tag": "policy", "keys": ["tier", "assisted", "iterated", "generated", "disclosure", "levels", "framework"], "a": "<strong>AI-Assisted</strong>: you did the work, AI helped around the edges (brainstorming, grammar). <strong>AI-Iterated</strong>: you and AI traded drafts — real AI contribution, substantially reshaped by you. <strong>AI-Generated</strong>: AI produced the substance and you curated and verified it. Whatever the tier, disclose it on major submissions — the honesty is the point."},
+    {"q": "Can I use AI / ChatGPT in these courses?", "tag": "policy", "keys": ["ai", "chatgpt", "gpt", "claude", "copilot", "allowed", "use", "cheating", "artificial"], "a": "Yes — openly. Both courses use a three-tier disclosure framework: <strong>AI-Assisted</strong>, <strong>AI-Iterated</strong>, and <strong>AI-Generated</strong>. Major submissions need a disclosure naming the tier. A few in-class activities are explicitly NO-AI because the skill being trained is yours. Scroll to the AI Policy section on this page and try the tier check."},
+    {"q": "What do the three AI tiers mean?", "tag": "policy", "keys": ["tier", "assisted", "iterated", "generated", "disclosure", "levels", "framework"], "a": "Per the syllabus: <strong>AI-Assisted</strong> — used for brainstorming or outlining (human-led). <strong>AI-Iterated</strong> — used to refine tone or structure (collaborative). <strong>AI-Generated</strong> — substantial portions drafted by AI (AI-led, but fact-checked by human). Whatever the tier, disclose it on major submissions — the honesty is the point."},
     {"q": "Do I have to disclose AI use?", "tag": "policy", "keys": ["disclose", "disclosure", "declare", "report", "honesty"], "a": "On major submissions, yes — a short statement naming the tier (AI-Assisted / AI-Iterated / AI-Generated). It's not a gotcha; it's practice for how professional teams should work with these tools."},
     {"q": "Which activities ban AI?", "tag": "policy", "keys": ["noai", "no-ai", "ban", "banned", "without", "forbidden"], "a": "A few in-class activities in MIS 580A are explicitly NO-AI — for example the <strong>Usability Dash</strong>. They're announced as such. The point: some skills have to live in your own head."},
     {"q": "What kinds of projects are in MIS 473?", "tag": "473", "keys": ["project", "kinds", "types", "clients", "organizations", "examples", "work"], "a": "Real projects for real local organizations — nonprofits, villages, community groups. Recent briefs have included website builds and redesigns, Microsoft 365 workflow automation, cloud migrations, accessibility improvements, and research/data projects. You'll see this semester's full list on day one — then you bid."},
     {"q": "How do teams work in MIS 473?", "tag": "473", "keys": ["team", "teams", "partner", "pairs", "group", "size", "formation"], "a": "Teams of <strong>two</strong>. You form teams at the first class (Wed Aug 19), pick a team leader, and bid on projects together. Assignments are final once posted — like a real staffing decision."},
     {"q": "How does project bidding work?", "tag": "473", "keys": ["bid", "bidding", "bids", "choose", "pick", "assign", "assignment"], "a": "Project briefs are presented at the first class. Your team ranks the projects it wants, and the <strong>team leader emails the bids by Friday, August 21, noon</strong>. Prof. MacDonald assigns projects by end of day Sunday, balancing preferences across teams. Assignments are final."},
     {"q": "What are Weekly Updates in MIS 473?", "tag": "473", "keys": ["weekly", "update", "updates", "log", "monday", "8pm", "report"], "a": "A short weekly status PDF, due <strong>every Monday at 8 PM</strong> starting Sep 21 (11 total; none on Oct 12 during break; last one Dec 7). Named <span class='mono'>Team#_Week#_Update.pdf</span>, submitted on Brightspace. Small weight (5%), big signal — it's the course's heartbeat, and there's an example posted from day one."},
-    {"q": "What are checkpoints in MIS 473?", "tag": "473", "keys": ["checkpoint", "checkpoints", "cp1", "cp2", "milestone", "review"], "a": "Two graded checkpoint meetings with Prof. MacDonald (15% each). <strong>Checkpoint 1:</strong> meetings Sep 28 – Oct 7, submission due Tue Oct 6. <strong>Checkpoint 2:</strong> meetings Oct 26 – Nov 11. You submit to Brightspace <em>before</em> your meeting, then talk through progress, blockers, and next steps."},
+    {"q": "What are checkpoints in MIS 473?", "tag": "473", "keys": ["checkpoint", "checkpoints", "cp1", "cp2", "cp3", "milestone", "review"], "a": "Three graded checkpoint meetings with Prof. MacDonald this fall (10% each, 30% total — back to the standard fall structure). <strong>Checkpoint 1:</strong> meetings Sep 28 – Oct 7, submission due Tue Oct 6. <strong>Checkpoint 2:</strong> meetings Oct 21 – Nov 2, submission due Fri Oct 30. <strong>Checkpoint 3:</strong> meetings Nov 4 – Nov 16, submission due Fri Nov 13. You submit to Brightspace <em>before</em> your meeting, then talk through progress, blockers, and next steps."},
     {"q": "What is the project proposal?", "tag": "473", "keys": ["proposal", "compact", "propose", "scope", "plan"], "a": "Your Project Proposal + Team Compact (one file) defines scope, milestones, deliverables, and how your team operates. You review it with Prof. MacDonald in a scheduled meeting (Sep 8–16), submitting before your slot — <strong>due Wed Sep 16</strong>. His grading mantra: clear goals good, milestones better, <em>measurable deliverables</em> best. Samples are on Brightspace."},
-    {"q": "How is MIS 473 graded?", "tag": "473", "keys": ["473", "grade", "graded", "grading", "breakdown", "weight", "percent"], "a": "Client evaluation 25% · Proposal 15% · Checkpoint 1 15% · Checkpoint 2 15% · Final presentation 15% · Peer evaluations 10% (2×5) · Weekly updates 5%. Notice who holds the biggest single share: <strong>your client</strong>."},
+    {"q": "How is MIS 473 graded?", "tag": "473", "keys": ["473", "grade", "graded", "grading", "breakdown", "weight", "percent"], "a": "Client evaluation 25% · Proposal 15% · Final presentation 15% · Checkpoint 1 10% · Checkpoint 2 10% · Checkpoint 3 10% · Peer evaluations 10% (2×5) · Weekly updates 5%. Notice who holds the biggest single share: <strong>your client</strong>."},
     {"q": "How much time does MIS 473 take?", "tag": "473", "keys": ["time", "commitment", "hours", "workload", "week", "busy"], "a": "Plan on roughly <strong>10 hours a week outside class</strong> — it's a 4-credit projects course and your client is counting on you. The teams that struggle are the ones that backload; the weekly updates exist to keep you honest."},
     {"q": "What if my client isn't responding?", "tag": "473", "keys": ["client", "respond", "responding", "unresponsive", "ghost", "stuck", "problem", "communication"], "a": "Don't sit on it. Follow up promptly and professionally, document your attempts in your weekly update, and <strong>loop in Prof. MacDonald early</strong> — client communication issues are normal and fixable, but only if he knows. Silence is the only unrecoverable move."},
     {"q": "When are MIS 473 final presentations?", "tag": "473", "keys": ["final", "presentation", "presentations", "december", "end"], "a": "<strong>Nov 23 – Dec 7</strong>, in the classroom during class time; your team's slot is scheduled via the Google Sheet. Sample presentations are on Brightspace. A readiness workshop runs Wed Nov 18."},
     {"q": "What happens at the end of MIS 473?", "tag": "473", "keys": ["end", "handoff", "deliver", "wrap", "evaluations", "transfer"], "a": "By <strong>Friday, Dec 11</strong>: deliver the final product and all project deliverables to your client, transfer ownership of every account, file, credential, and asset, document any agreed post-semester actions — and complete team, client, and peer evaluations. The project isn't done until the client can run it without you."},
     {"q": "Does MIS 473 meet in class every week?", "tag": "473", "keys": ["every", "week", "meetings", "classroom", "allhands", "all-hands"], "a": "No — it's meeting-driven, not lecture-driven. Some weeks are all-hands classroom sessions (marked \"all students required\"), most are team/client work and scheduled meetings with Prof. MacDonald. The syllabus schedule table tells you which is which; when in doubt, check Brightspace."},
     {"q": "What is GP1 in MIS 580A?", "tag": "580a", "keys": ["gp1", "ai", "business", "first", "group", "project"], "a": "<strong>GP1: AI in Business</strong> (15%) — weeks 1–6. Teams operate as a C-suite with assigned executive roles, working in phases: framing, evaluating real AI use cases with evidence, then synthesis. Presentations are <strong>Wed Sep 23</strong>, with peer feedback in class."},
-    {"q": "What is the Major Group Project in MIS 580A?", "tag": "580a", "keys": ["major", "group", "project", "gp2", "initiative", "strategic", "40"], "a": "The <strong>Strategic Communication Initiative</strong> (40%) — the back half of the semester. Arc: a 60-second <strong>Friction Brief</strong> pitch (approved or redirected on the spot) → stakeholder mapping → graded midpoint → <strong>a real-world constraint assigned mid-project</strong> → final presentation ending in the <strong>Resistance Test</strong>. Final combined PDF due Tue Dec 8 on Brightspace."},
+    {"q": "What is the Major Group Project in MIS 580A?", "tag": "580a", "keys": ["major", "group", "project", "gp2", "initiative", "strategic", "35"], "a": "The <strong>Strategic Communication Initiative</strong> (35%) — the back half of the semester. Arc: a 60-second <strong>Friction Brief</strong> pitch (approved or redirected on the spot) → stakeholder mapping → a graded, lightweight midpoint pitch (pivoting on feedback still counts in your favor) → <strong>a real-world constraint assigned mid-project</strong>, and final presentations conclude with a brief adversarial Q&amp;A (the <strong>Resistance Test</strong>). Final combined PDF due Tue Dec 8 on Brightspace."},
     {"q": "What is the Resistance Test?", "tag": "580a", "keys": ["resistance", "test", "adversarial", "qa", "q&a", "skeptical", "vp"], "a": "The finale of your final presentation: a short <strong>adversarial Q&amp;A</strong> where Prof. MacDonald plays a skeptical VP trying to poke holes in your strategy. It's the most realistic four minutes of the semester — real proposals meet real resistance. There's a prep workshop Mon Nov 23."},
     {"q": "What is the constraint in MIS 580A?", "tag": "580a", "keys": ["constraint", "random", "assigned", "midpoint", "curveball"], "a": "After the midpoint checkpoint (week of Nov 2), each team is assigned a <strong>real-world constraint</strong> its final strategy must operate within — budget cuts, leadership changes, that kind of thing. You can't know yours in advance; that's the point. Strategy that only works under ideal conditions isn't strategy."},
-    {"q": "How is MIS 580A graded?", "tag": "580a", "keys": ["580", "580a", "grade", "graded", "grading", "breakdown", "weight", "percent"], "a": "Major Group Project 40% · Individual labs &amp; assignments 25% · GP1 (AI in Business) 15% · Engagement &amp; participation 10% · Peer review &amp; reflection 10%. Much of the in-class work is completion-based — show up, engage honestly, and the small stuff takes care of itself."},
+    {"q": "How is MIS 580A graded?", "tag": "580a", "keys": ["580", "580a", "grade", "graded", "grading", "breakdown", "weight", "percent"], "a": "Individual labs &amp; assignments 50% · Major Group Project 35% · GP1 (AI in Business) 15%. There's no separate attendance/engagement line or peer-review category — most in-class work is completion-based (that's how \"engagement\" actually shows up in the grade), and peer-feedback/reflection pieces are folded into GP1 and GP2's own grading rather than a category of their own."},
     {"q": "What activities happen in MIS 580A?", "tag": "580a", "keys": ["activities", "activity", "fun", "debate", "workshop", "games"], "a": "A sampler: Communication Failure Autopsy · AI Ethics Snowball Debate · Usability Dash · Elevator Pitch Workshop · Channel Audit Walkabout · stakeholder field work · Message Diagnosis Lab · Rapid Usability Challenge · The Judgment Call · The Cold Call · Corporate Telephone · Signal &amp; Noise. Every one exists to train a communication muscle you'll use at work."},
     {"q": "What is the Friction Brief?", "tag": "580a", "keys": ["friction", "brief", "pitch", "60", "sixty"], "a": "A <strong>60-second pitch</strong> (Oct 19–21) where your team names a real communication friction worth fixing — and gets an approve-or-redirect decision from Prof. MacDonald on the spot. It's the gate into the Major Group Project, and it develops over fall break by design."},
-    {"q": "How does peer review work in MIS 580A?", "tag": "580a", "keys": ["peer", "review", "feedback", "template"], "a": "Peer review &amp; reflection is 10% of the grade. Reviews use a simple fixed template submitted through Brightspace, and the process is walked through in class before anyone leaves the room — no survey-link scavenger hunts."},
+    {"q": "How does peer review work in MIS 580A?", "tag": "580a", "keys": ["peer", "review", "feedback", "template"], "a": "There's no standalone peer-review category — it's part of the projects it belongs to. GP1 includes a peer-feedback one-pager (a simple fixed template, walked through in class before anyone leaves the room — no survey-link scavenger hunts), and GP2 includes a peer critique (the Rapid Usability Challenge) plus a Post-Presentation Reflection. Both count toward that project's grade."},
     {"q": "Is MIS 580A a lot of lecturing?", "tag": "580a", "keys": ["lecture", "lecturing", "slides", "talking", "boring"], "a": "No. Design rule: <strong>no lecture block longer than ~35 minutes</strong>, and most are far shorter. Sessions run on timed activity blocks — you'll spend class time doing, presenting, debating, and giving feedback."},
     {"q": "What can I ask you?", "tag": "meta", "keys": ["what", "ask", "help", "can", "you", "do", "topics"], "a": "Anything about: Prof. MacDonald (background, office, contact) · when and where classes meet · key dates and deadlines · how each course is graded · projects, bidding, checkpoints, and weekly updates (473) · GP1, the Major Group Project, the Resistance Test (580A) · the AI policy. I'm a hand-built FAQ, not an AI — if I whiff, <a href='mailto:jmacdon@binghamton.edu'>email the human</a>."}
   ]
@@ -396,7 +412,7 @@
       <a href="#now">Right now</a>
       <a href="#courses">The courses</a>
       <a href="#ask">Ask me anything</a>
-      <a href="#ai">AI policy + quiz</a>
+      <a href="#ai">AI policy + tier check</a>
       <a href="#about">About Prof. MacDonald</a>
     </nav>
   </div>
@@ -439,11 +455,11 @@
     <h2>The AI policy, in plain English</h2>
     <p class="h2sub" id="ai-note"></p>
     <div class="tiers" id="ai-tiers"></div>
-    <div class="quiz" id="quiz">
-      <div class="qnum" id="quiz-num"></div>
-      <div class="scenario" id="quiz-scenario"></div>
-      <div class="opts" id="quiz-opts"></div>
-      <div id="quiz-after"></div>
+    <div class="tiercheck" id="tiercheck">
+      <div class="qnum" id="tc-num"></div>
+      <div class="scenario" id="tc-scenario"></div>
+      <div class="opts" id="tc-opts"></div>
+      <div id="tc-after"></div>
     </div>
   </section>
 
@@ -554,9 +570,10 @@
   // ── course cards ──
   const cardsEl = document.getElementById("course-cards");
   DATA.courses.forEach(c => {
+    const maxPct = Math.max(...c.grading.map(g => g.pct));
     const bars = c.grading.map(g =>
       "<div class='gr'><div class='lbl'><span class='n'>" + esc(g.item) + "</span><span class='v'>" + g.pct + "%</span></div>" +
-      "<div class='track'><div class='fill' style='width:" + (g.pct/40*100) + "%'></div></div></div>").join("");
+      "<div class='track'><div class='fill' style='width:" + (g.pct/maxPct*100) + "%'></div></div></div>").join("");
     const merged = c.keyDates.concat(DATA.universityDates).sort((a,b) => d(a.date) - d(b.date));
     const nextIdx = merged.findIndex(k => daysUntil(k.date) >= 0);
     const dates = merged.map((k,i) => {
@@ -675,7 +692,7 @@
     " courses, any hour. I'm a hand-built FAQ (not an AI — ask me about the AI policy and you'll see why the difference matters). What do you want to know?", "bot");
   addChips(pick(FAQ, 4, null));
 
-  // ── AI policy + quiz ──
+  // ── AI policy + tier check ──
   document.getElementById("ai-note").textContent = DATA.aiPolicy.note;
   const tiersEl = document.getElementById("ai-tiers");
   DATA.aiPolicy.tiers.forEach(t => {
@@ -684,21 +701,21 @@
       "<h4>" + esc(t.short) + "</h4><p>" + esc(t.desc) + "</p></div>");
   });
 
-  const QUIZ = DATA.aiPolicy.quiz;
+  const CHECK = DATA.aiPolicy.tierCheck;
   const OPTS = DATA.aiPolicy.tiers.map(t => t.name).concat(["🚫 Not allowed here"]);
   let qi = 0, qscore = 0;
-  const qNum = document.getElementById("quiz-num"),
-        qScn = document.getElementById("quiz-scenario"),
-        qOpts = document.getElementById("quiz-opts"),
-        qAfter = document.getElementById("quiz-after");
+  const qNum = document.getElementById("tc-num"),
+        qScn = document.getElementById("tc-scenario"),
+        qOpts = document.getElementById("tc-opts"),
+        qAfter = document.getElementById("tc-after");
 
   function renderQ(){
     qAfter.innerHTML = "";
-    if (qi >= QUIZ.length){
+    if (qi >= CHECK.length){
       qNum.textContent = "Results";
-      qScn.textContent = qscore + " / " + QUIZ.length + " — " +
-        (qscore === QUIZ.length ? "Perfect. Your disclosure statements will be a joy to read." :
-         qscore >= QUIZ.length - 1 ? "Solid. You clearly get the framework." :
+      qScn.textContent = qscore + " / " + CHECK.length + " — " +
+        (qscore === CHECK.length ? "Perfect. Your disclosure statements will be a joy to read." :
+         qscore >= CHECK.length - 1 ? "Solid. You clearly get the framework." :
          "Worth a re-read of the tiers above — then try again.");
       qOpts.innerHTML = "";
       const rb = document.createElement("button");
@@ -707,8 +724,8 @@
       qAfter.appendChild(rb);
       return;
     }
-    const item = QUIZ[qi];
-    qNum.textContent = "Which tier is it? · " + (qi+1) + " of " + QUIZ.length;
+    const item = CHECK[qi];
+    qNum.textContent = "Which tier is it? · " + (qi+1) + " of " + CHECK.length;
     qScn.textContent = item.scenario;
     qOpts.innerHTML = "";
     OPTS.forEach((o, idx) => {
@@ -722,7 +739,7 @@
           esc(OPTS[item.answer]) + "</strong>. ") + esc(item.explain) + "</div>";
         const nb = document.createElement("button");
         nb.className = "nextbtn";
-        nb.textContent = qi === QUIZ.length - 1 ? "See results" : "Next scenario";
+        nb.textContent = qi === CHECK.length - 1 ? "See results" : "Next scenario";
         nb.addEventListener("click", () => { qi++; renderQ(); });
         qAfter.appendChild(nb);
       });
