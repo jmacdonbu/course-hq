@@ -75,23 +75,37 @@
   .h2row{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
   .tag{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:700}
 
+  /* ── per-course identity colors (now-cards AND course cards) ── */
+  .c-473{--cc:var(--green); --cc-ink:var(--green)}
+  .c-580a{--cc:var(--accent); --cc-ink:#8f671c}
+  @media (prefers-color-scheme: dark){
+    .c-580a{--cc-ink:var(--accent)}
+  }
+
   /* ── right-now strip ─────────────────────── */
   .nowgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:14px}
   .nowcard{
     background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
-    padding:18px 20px; box-shadow:var(--shadow); border-top:3px solid var(--green);
+    padding:18px 20px; box-shadow:var(--shadow); border-top:5px solid var(--cc,var(--green));
   }
-  .nowcard .course{font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-2)}
-  .nowcard .phase{font-size:19px; font-weight:800; margin:4px 0 2px}
+  .nowcard .cid{display:flex; align-items:center; justify-content:space-between; gap:10px}
+  .nowcard .ccode{font-size:21px; font-weight:800; letter-spacing:-.01em; color:var(--cc-ink,var(--green))}
+  .nowcard .badge{
+    font-size:10.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--cc-ink,var(--green)); border:1.5px solid var(--cc,var(--green));
+    padding:3px 10px; border-radius:999px; white-space:nowrap;
+  }
+  .nowcard .cfull{font-size:13px; font-weight:600; color:var(--ink-2); margin:2px 0 12px}
+  .nowcard .phase{font-size:17px; font-weight:800; margin:0 0 2px}
   .nowcard .detail{font-size:14px; color:var(--ink-2)}
   .nowcard .next{margin-top:12px; padding-top:10px; border-top:1px dashed var(--line); font-size:13.5px}
-  .nowcard .next b{color:var(--green)}
+  .nowcard .next b{color:var(--cc-ink,var(--green))}
 
   /* ── course cards ────────────────────────── */
   .courses{display:grid; grid-template-columns:repeat(auto-fit,minmax(330px,1fr)); gap:18px}
-  .ccard{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+  .ccard{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; border-top:5px solid var(--cc,var(--green))}
   .ccard .chead{padding:20px 22px 16px; border-bottom:1px solid var(--line)}
-  .ccard .code{font-size:13px; font-weight:800; color:var(--green); letter-spacing:.06em}
+  .ccard .code{font-size:16px; font-weight:800; color:var(--cc-ink,var(--green)); letter-spacing:.02em}
   .ccard h3{font-size:20px; font-weight:800; letter-spacing:-.01em; margin:2px 0 6px}
   .ccard .tagline{font-style:italic; color:var(--ink-2); font-size:14.5px}
   .meta{display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:12px; font-size:13px; color:var(--ink-2)}
@@ -105,14 +119,14 @@
   .gr .lbl{display:flex; justify-content:space-between; font-size:13px; margin-bottom:3px}
   .gr .lbl .n{color:var(--ink)} .gr .lbl .v{color:var(--ink-2); font-variant-numeric:tabular-nums}
   .gr .track{height:9px; background:var(--bar-track); border-radius:4px; overflow:hidden}
-  .gr .fill{height:100%; background:var(--bar-fill); border-radius:0 4px 4px 0}
+  .gr .fill{height:100%; background:var(--cc,var(--bar-fill)); border-radius:0 4px 4px 0}
 
   ul.dates{list-style:none}
   ul.dates li{
     display:flex; gap:12px; padding:7px 0; font-size:14px; border-bottom:1px solid var(--line);
   }
   ul.dates li:last-child{border-bottom:none}
-  ul.dates .d{flex:0 0 88px; font-weight:700; color:var(--green); font-variant-numeric:tabular-nums; font-size:13px; padding-top:1px}
+  ul.dates .d{flex:0 0 88px; font-weight:700; color:var(--cc-ink,var(--green)); font-variant-numeric:tabular-nums; font-size:13px; padding-top:1px}
   ul.dates li.past{opacity:.45}
   ul.dates li.past .d{color:var(--ink-3)}
   ul.dates li.next-up{background:var(--green-soft); margin:0 -10px; padding:7px 10px; border-radius:8px; border-bottom-color:transparent}
@@ -562,7 +576,10 @@
         (nk.time ? ", " + nk.time : "") + (n===0 ? " (today!)" : n===1 ? " (tomorrow)" : " (in " + n + " days)") + "</div>";
     }
     nowGrid.insertAdjacentHTML("beforeend",
-      "<div class='nowcard'><div class='course'>" + esc(c.code) + (label ? " · " + label : "") + "</div>" +
+      "<div class='nowcard c-" + esc(c.id) + "'>" +
+      "<div class='cid'><span class='ccode'>" + esc(c.code) + "</span>" +
+      (label ? "<span class='badge'>" + esc(label) + "</span>" : "") + "</div>" +
+      "<div class='cfull'>" + esc(c.title) + "</div>" +
       "<div class='phase'>" + esc(cur.title) + "</div>" +
       "<div class='detail'>" + esc(cur.detail) + "</div>" + nextLine + "</div>");
   });
@@ -582,8 +599,8 @@
         (k.time ? " · " + esc(k.time) : "") + "</span></li>";
     }).join("");
     cardsEl.insertAdjacentHTML("beforeend",
-      "<div class='ccard'><div class='chead'>" +
-      "<div class='code'>" + esc(c.code) + " · " + esc(c.level) + "</div>" +
+      "<div class='ccard c-" + esc(c.id) + "'><div class='chead'>" +
+      "<div class='code'>" + esc(c.code) + " <span style='font-weight:600;font-size:12.5px;color:var(--ink-2);letter-spacing:.06em'>· " + esc(c.level) + "</span></div>" +
       "<h3>" + esc(c.title) + "</h3>" +
       "<div class='tagline'>“" + esc(c.tagline) + "”</div>" +
       "<div class='meta'><span>📅 " + esc(c.meets) + "</span><span>📍 " + esc(c.room) + "</span></div>" +
