@@ -16,21 +16,36 @@
   load time — zero maintenance during the semester.
 -->
 <style>
-  :root{
+  :focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:4px}
+    .skip{position:absolute;left:-9999px;top:0;z-index:100;background:var(--card);color:var(--green);padding:12px 18px;border:2px solid var(--green);border-radius:0 0 8px 0;font-weight:700;text-decoration:none}
+    .skip:focus{left:0}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+    header{position:relative}
+    .themebtn{position:absolute;top:14px;right:18px;display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:10px 15px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;color:#f2f6f4;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4);border-radius:999px}
+    .themebtn:hover{background:rgba(255,255,255,.24)}
+    @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+    :root{
     --green:#005A43; --green-deep:#00402f; --green-soft:#e7f0ec;
-    --paper:#faf8f4; --card:#ffffff; --ink:#1e2a26; --ink-2:#54635d; --ink-3:#8a968f;
-    --line:#e3e0d8; --accent:#b98c2f; --accent-soft:#f6efdd;
+    color-scheme:light; --paper:#faf8f4; --card:#ffffff; --ink:#1e2a26; --ink-2:#54635d; --ink-3:#69726d;
+    --line:#e3e0d8; --accent:#b98c2f; --accent-soft:#f6efdd; --accent-ink:#896823; --on-green:#ffffff; --focus:#005A43;
     --bar-track:#edeae2; --bar-fill:#0d7a5c;
     --radius:14px; --shadow:0 1px 2px rgba(30,42,38,.06), 0 8px 24px -12px rgba(30,42,38,.12);
   }
   @media (prefers-color-scheme: dark){
-    :root{
+    :root:not([data-theme="light"]){ color-scheme:dark;
       --green:#3fa886; --green-deep:#0f2b22; --green-soft:#12261f;
-      --paper:#101815; --card:#182320; --ink:#e8ece9; --ink-2:#a7b3ad; --ink-3:#6f7d76;
-      --line:#28352f; --accent:#d4ad5a; --accent-soft:#2a2415;
+      --paper:#101815; --card:#182320; --ink:#e8ece9; --ink-2:#a7b3ad; --ink-3:#7c8c84;
+      --line:#28352f; --accent:#d4ad5a; --accent-soft:#2a2415; --accent-ink:#d4ad5a; --on-green:#08201a; --focus:#d4ad5a;
       --bar-track:#243029; --bar-fill:#3fa886;
       --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
     }
+  }
+  :root[data-theme="dark"]{ color-scheme:dark;
+      --green:#3fa886; --green-deep:#0f2b22; --green-soft:#12261f;
+      --paper:#101815; --card:#182320; --ink:#e8ece9; --ink-2:#a7b3ad; --ink-3:#7c8c84;
+      --line:#28352f; --accent:#d4ad5a; --accent-soft:#2a2415; --accent-ink:#d4ad5a; --on-green:#08201a; --focus:#d4ad5a;
+      --bar-track:#243029; --bar-fill:#3fa886;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.5);
   }
   *{box-sizing:border-box; margin:0}
   html{scroll-behavior:smooth}
@@ -50,8 +65,9 @@
     color:#f2f6f4; padding:44px 0 40px; border-bottom:4px solid var(--accent);
   }
   @media (prefers-color-scheme: dark){
-    header{background:linear-gradient(160deg,#0f2b22 0%,#123a2d 100%)}
+    :root:not([data-theme="light"]) header{background:linear-gradient(160deg,#0f2b22 0%,#123a2d 100%)}
   }
+  :root[data-theme="dark"] header{background:linear-gradient(160deg,#0f2b22 0%,#123a2d 100%)}
   .kicker{font-size:12px; letter-spacing:.18em; text-transform:uppercase; opacity:.75; margin-bottom:10px}
   header h1{font-size:clamp(28px,5vw,44px); font-weight:800; letter-spacing:-.02em; line-height:1.1}
   header h1 .thin{font-weight:300; opacity:.85}
@@ -79,8 +95,9 @@
   .c-473{--cc:var(--green); --cc-ink:var(--green)}
   .c-580a{--cc:var(--accent); --cc-ink:#8f671c}
   @media (prefers-color-scheme: dark){
-    .c-580a{--cc-ink:var(--accent)}
+    :root:not([data-theme="light"]) .c-580a{--cc-ink:var(--accent)}
   }
+  :root[data-theme="dark"] .c-580a{--cc-ink:var(--accent)}
 
   /* ── right-now strip ─────────────────────── */
   .nowgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:14px}
@@ -141,7 +158,7 @@
   .chatlog{padding:20px; max-height:460px; overflow-y:auto; display:flex; flex-direction:column; gap:12px}
   .msg{max-width:82%; padding:11px 15px; border-radius:14px; font-size:14.5px}
   .msg.bot{background:var(--green-soft); border:1px solid var(--line); border-top-left-radius:4px; align-self:flex-start}
-  .msg.user{background:var(--green); color:#fff; border-top-right-radius:4px; align-self:flex-end}
+  .msg.user{background:var(--green); color:var(--on-green); border-top-right-radius:4px; align-self:flex-end}
   .msg.bot a{color:var(--green); font-weight:600}
   .msg .src{display:block; margin-top:7px; font-size:11.5px; color:var(--ink-3)}
   .chips{display:flex; flex-wrap:wrap; gap:8px; align-self:flex-start; max-width:90%}
@@ -154,11 +171,11 @@
   .chatbar{display:flex; gap:10px; padding:14px 16px; border-top:1px solid var(--line)}
   .chatbar input{
     flex:1; padding:11px 14px; font-size:15px; border:1px solid var(--line); border-radius:10px;
-    background:var(--paper); color:var(--ink); outline:none;
+    background:var(--paper); color:var(--ink); 
   }
-  .chatbar input:focus{border-color:var(--green)}
+  .chatbar input:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-color:var(--green)}
   .chatbar button{
-    padding:11px 20px; font-size:14.5px; font-weight:700; color:#fff; background:var(--green);
+    padding:11px 20px; font-size:14.5px; font-weight:700; color:var(--on-green); background:var(--green);
     border:none; border-radius:10px; cursor:pointer;
   }
   .chatbar button:hover{background:var(--green-deep)}
@@ -180,10 +197,10 @@
   }
   .tiercheck .opts button:hover{border-color:var(--green); color:var(--green)}
   .tiercheck .opts button:disabled{cursor:default; opacity:.55}
-  .tiercheck .opts button.right{background:var(--green); border-color:var(--green); color:#fff; opacity:1}
+  .tiercheck .opts button.right{background:var(--green); border-color:var(--green); color:var(--on-green); opacity:1}
   .tiercheck .opts button.wrong{border-color:#b3543f; color:#b3543f; opacity:1}
   .tiercheck .verdict{margin-top:16px; padding:14px 16px; border-radius:10px; font-size:14.5px; background:var(--green-soft); border:1px solid var(--line)}
-  .tiercheck .nextbtn{margin-top:14px; padding:9px 18px; font-weight:700; font-size:14px; color:#fff; background:var(--green); border:none; border-radius:10px; cursor:pointer}
+  .tiercheck .nextbtn{margin-top:14px; padding:9px 18px; font-weight:700; font-size:14px; color:var(--on-green); background:var(--green); border:none; border-radius:10px; cursor:pointer}
 
   /* ── about ───────────────────────────────── */
   .about{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px}
@@ -209,6 +226,8 @@
   }
   @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
 </style>
+<meta name="color-scheme" content="light dark">
+<script>(function(){try{var t=localStorage.getItem("chq-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "aefaf08e5cf54814a8a92691e310b807"}'></script><!-- End Cloudflare Web Analytics -->
 </head>
 <body>
@@ -419,8 +438,10 @@
 
 <div class="draftbar"><b>This page is a draft, not an official source.</b> For official course information, always check Brightspace and the syllabus.</div>
 
+<a class="skip" href="#main">Skip to main content</a>
 <header>
   <div class="wrap">
+    <button class="themebtn" id="themebtn" type="button"><span aria-hidden="true" id="themeicon">◑</span><span id="themelabel">Theme: System</span></button>
     <div class="kicker">Binghamton University · School of Management</div>
     <h1>MacDonald <span class="thin">Course HQ</span></h1>
     <p class="sub">Everything you actually want to know about Prof. John MacDonald's courses —
@@ -439,7 +460,7 @@
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap" id="main">
 
   <section id="now">
     <div class="h2row"><h2>Right now</h2><span class="tag" id="now-tag"></span></div>
@@ -784,6 +805,26 @@
     "<div class='factline'><span class='k'>This semester</span><span>" + DATA.courses.map(c => c.code).join(" · ") + " (" + SEM.label + ")</span></div>";
   document.getElementById("ft-sem").textContent = SEM.label;
   document.getElementById("ft-updated").textContent = SEM.dataUpdated;
+})();
+
+/* ---- theme switcher: System -> Light -> Dark ---- */
+(function(){
+  var btn=document.getElementById('themebtn');
+  if(!btn)return;
+  var icon=document.getElementById('themeicon'),label=document.getElementById('themelabel'),
+      order=['system','light','dark'],icons={system:'\u25d1',light:'\u2600',dark:'\u263d'},cur='system';
+  try{var st=localStorage.getItem('chq-theme'); if(st==='light'||st==='dark')cur=st;}catch(e){}
+  function apply(t){
+    cur=t;
+    if(t==='system')document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme',t);
+    try{t==='system'?localStorage.removeItem('chq-theme'):localStorage.setItem('chq-theme',t);}catch(e){}
+    var n=t.charAt(0).toUpperCase()+t.slice(1);
+    icon.textContent=icons[t]; label.textContent='Theme: '+n;
+    btn.setAttribute('aria-label','Colour theme: '+n+'. Activate to change.');
+  }
+  apply(cur);
+  btn.addEventListener('click',function(){apply(order[(order.indexOf(cur)+1)%3]);});
 })();
 </script>
 </body>
